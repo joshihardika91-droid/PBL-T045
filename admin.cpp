@@ -3,7 +3,7 @@
 using namespace std;
 class Attendance
 {
-public:
+private:
     string StudentId;
     string Name;
     string Date;
