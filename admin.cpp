@@ -1,6 +1,38 @@
 #include<iostream>
 #include<string>
 using namespace std;
+
+
+class Admin
+{
+private:
+    string username;
+    string password;
+
+public:
+    Admin()
+    {
+        username = "ADMIN";
+        password = "hostel@123";
+    }
+
+    int login()
+    {
+        string user, pass;
+
+        cout << "Enter Username: ";
+        cin >> user;
+
+        cout << "Enter Password: ";
+        cin >> pass;
+
+        if(user == username && pass == password)
+        return(1);
+        else
+        return(0);
+    }
+};
+
 class Attendance
 {
 private:
@@ -22,32 +54,23 @@ void Attendancemark()
     cout << "Attendance marked successfully! " << endl;
 }
 };
+
+
 int main()
 {
-    Attendance at;
-    at.Attendancemark();
+    Admin admin;
+
+    if(admin.login())
+    {
+        cout << "Login Successful!" << endl;
+        
+        Attendance at;
+        at.Attendancemark();
+    }
+    else
+    {
+        cout << "Invalid Credentials!" << endl;
+    }
+
     return 0;
 }
-
-
-using namespace std;
-class Admin{
-    string Admin_password;
-    string user_name;
-
-    const string ADMIN_USERNAME= "ADMIN";
-    const string ADMIN_PASS= "Hosttel@123";
-
-    void login(){cout<<"------HOSTEL MANAGEMENT SYSTEM------"<<endl;
-    cout<<"Admin login:"<<endl;
-
-    cout<<"Enter Admin Username: ";
-    cin>>user_name;
-    cout<<"Enter Admin Password: ";
-    cin>>Admin_password;}
-
-    
-
-
-
-};
