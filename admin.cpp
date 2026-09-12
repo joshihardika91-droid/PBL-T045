@@ -8,6 +8,7 @@ private:
     string Name;
     string Date;
     string Status;
+public:
 void Attendancemark()
 {
     cout << "Enter student id: " << endl;
