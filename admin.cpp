@@ -8,18 +8,19 @@ private:
     string Name;
     string Date;
     string Status;
-void Attendancemark()
-{
-    cout << "Enter student id: " << endl;
-    cin >> StudentId;
-    cout << "Enter student name: " << endl;
-    cin.ignore();
-    getline(cin,Name);
-    cout << "Enter present date: " << endl;
-    cin >> Date;
-    cout << "Enter status (Present/Absent): " << endl;
-    cin >> Status;
-    cout << "Attendance marked successfully! " << endl;
+public:
+    void Attendancemark()
+    {
+        cout << "Enter student id: " << endl;
+        cin >> StudentId;
+        cout << "Enter student name: " << endl;
+        cin.ignore();
+        getline(cin,Name);
+        cout << "Enter present date: " << endl;
+        cin >> Date;
+        cout << "Enter status (Present/Absent): " << endl;
+        cin >> Status;
+        cout << "Attendance marked successfully! " << endl;
 }
 };
 int main()
@@ -51,3 +52,55 @@ class Admin{
 
 
 };
+
+using namespace std;
+class User
+{
+    public:
+     string StudentId;
+     string Name;
+     string Password;
+     string Role;
+};
+User users[200];
+int userCount = 0;
+
+void Register()
+{
+    string id;
+    cout << "Enter student id: " << endl;
+    cin >> id;
+
+    int exists = 0;
+    for(int i = 0; i < userCount; i++)
+    {
+        if(users[i].StudentId == id)
+        {
+            exists = 1;
+            break;
+        }
+    }
+    if(exists == 1)
+    {
+        cout << "This Id is already registered!" << endl;
+    }
+    else
+    {
+        users[userCount].StudentId = id;
+        
+        cout << "Enter name: " << endl;
+        cin.ignore();
+        getline(cin, users[userCount].Name);
+        
+        users[userCount].StudentId = id;
+
+        cout << "Enter password: " << endl;
+        cin >> users[userCount].Password;
+
+        cout << "Enter role (admin/student): " << endl;
+        cin >> users[userCount].Role;
+
+        cout << "Registration successful!" << endl;
+        userCount++;
+    }
+}
