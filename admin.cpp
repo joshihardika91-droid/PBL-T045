@@ -31,6 +31,50 @@ class Admin
             
         }
 
+    void ChangePassword()
+    {
+        string oldpass,newpass;
+        cout<<"Enter old Password"<<endl;
+        cin>>oldpass;
+
+        if(oldpass == password)
+        {
+            cout<<"Enter New Password"<<endl;
+            cin>>newpass;
+
+            password=newpass;
+            cout<<"Password is successfully updated!"<<endl;
+        
+
+        }
+        else
+        {
+            cout<<"Wrong old Password"<<endl;
+        }
+    }
+
+    void ChangePassword()
+    {
+        string oldpass,newpass;
+        cout<<"Enter old Password"<<endl;
+        cin>>oldpass;
+
+        if(oldpass == password)
+        {
+            cout<<"Enter New Password"<<endl;
+            cin>>newpass;
+
+            password=newpass;
+            cout<<"Password is successfully updated!"<<endl;
+        
+
+        }
+        else
+        {
+            cout<<"Wrong old Password"<<endl;
+        }
+    }
+
 };
 
 
@@ -60,10 +104,8 @@ public:
 int main()
 {
     Admin admin;
-    
-    
 
-         if(admin.login())
+         if(admin.login()==1)
     {
         cout << "Login Successful!" << endl;
 
@@ -81,7 +123,26 @@ int main()
 
 
 
+class Admin{
+    string Admin_password;
+    string user_name;
 
+    const string ADMIN_USERNAME= "ADMIN";
+    const string ADMIN_PASS= "Hosttel@123";
+
+    void login(){cout<<"------HOSTEL MANAGEMENT SYSTEM------"<<endl;
+    cout<<"Admin login:"<<endl;
+
+    cout<<"Enter Admin Username: ";
+    cin>>user_name;
+    cout<<"Enter Admin Password: ";
+    cin>>Admin_password;}
+
+    
+
+
+
+};
 
 
 class User
@@ -130,6 +191,34 @@ class User
             cout << "Enter role (admin/student): " << endl;
             cin >> users[userCount].Role;
 
+        cout << "Registration successful!" << endl;
+        userCount++;
+    }
+}
+
+ void ChangePassword()
+    {
+        string oldpass,newpass;
+        cout<<"Enter old Password"<<endl;
+        cin>>oldpass;
+
+        if(oldpass == Password)
+        {
+            cout<<"Enter New Password"<<endl;
+            cin>>newpass;
+
+            Password=newpass;
+            cout<<"Password is successfully updated!"<<endl;
+        
+
+        }
+        else
+        {
+            cout<<"Wrong old Password"<<endl;
+        }
+    }
+
+};
             cout << "Registration successful!" << endl;
             userCount++;
         }}
