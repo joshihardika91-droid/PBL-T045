@@ -1,5 +1,7 @@
 #include<iostream>
 #include<string>
+#include "User.h"
+
 using namespace std;
 class Student:public User
 {   private:
@@ -41,7 +43,7 @@ class Student:public User
                         break;
                 case 6:cout << "Displaying Fee Status" << endl;
                        break;
-                case 7: cout << "Change Password" << endl;
+                case 7: ChangePassword(); //inherited from user class
                         break;
                 case 8: cout << "Logging out" << endl;
                         break;
