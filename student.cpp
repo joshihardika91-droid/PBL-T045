@@ -1,8 +1,13 @@
 #include<iostream>
 #include<string>
 using namespace std;
-class StudentInterface
-{
+class Student:public User
+{   private:
+    string StudentId;
+    string Name;
+    string Course;
+    string RoomNo;
+
     public:
     void menu()
     {
