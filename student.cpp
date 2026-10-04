@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string>
 using namespace std;
 class StudentInterface
 {
@@ -31,7 +32,7 @@ class StudentInterface
                         break;
                 case 4: cout << "Displaying Mess Schedule" << endl;
                         break;
-                case 5:cout << "Complaint Section" << endl;
+                case 5:Complaint();
                         break;
                 case 6:cout << "Displaying Fee Status" << endl;
                        break;
@@ -43,4 +44,17 @@ class StudentInterface
             }
             }while(choice<=8);
         }
+
+        void Complaint(){
+        string complaint;
+
+        cout << "\n-------- COMPLAINT SECTION --------" << endl;
+
+        cout << "Enter your complaint: ";
+        cin.ignore();
+        getline(cin, complaint);
+
+        cout << "Complaint submitted successfully!" << endl;
+         }
+
     };
