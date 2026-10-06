@@ -2,7 +2,8 @@
 #include<string>
 #include "User.h"
 #include"student.h"
-
+#include<fstream>
+#include<sstream>
 
 using namespace std;
 class Student:public User
