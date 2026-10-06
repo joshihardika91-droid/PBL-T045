@@ -2,7 +2,7 @@
 #define STUDENT_H
 
 #include "User.h"
-
+#define MAX 100
 class Student : public User
 {
 private:
@@ -17,6 +17,16 @@ public:
     void ViewProfile();
     void Complaint();
     void menu();
+};
+class Fee:public Student{
+    private :string status;
+             float amount;
+             string date;
+             float due;
+    public:void checkdues();
+            void makepayment();
+            
+             
 };
 
 #endif

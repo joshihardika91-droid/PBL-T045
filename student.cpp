@@ -1,6 +1,8 @@
 #include<iostream>
 #include<string>
 #include "User.h"
+#include"student.h"
+
 
 using namespace std;
 class Student:public User
@@ -65,3 +67,24 @@ class Student:public User
          }
 
     };
+    void feemanagement(){
+        int ch,i;
+        Fee fees[MAX];
+        cout<<"\n---------FEE PORTAL----------"<<endl;
+        cout<<"1.Make payment"<<endl;
+        cout<<"2.Check Dues"<<endl;
+        cout<<"3.Generate Invoice"<<endl;
+        cout<<"Choose the options "<<endl;
+        cin>>ch;
+        switch(ch){
+        case 1:fees[i].makepayment();
+               break;
+        case 2:fees[i].checkdues();
+                break;
+        
+        }
+    }
+   void makepayement(){
+        float amount;
+        
+   }
