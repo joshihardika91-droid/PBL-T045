@@ -1,4 +1,5 @@
 #include<iostream>
+#include<unordered_map>
 #include<string>
 #include "User.h"
 #include"student.h"
@@ -89,51 +90,18 @@ class Student:public User
         
    }
 
-
-   class Attendance
+   extern unordered_map<string, string> attendanceTable;
+   void ViewAttendance()
+   {
+        string StudentId;
+        cout << "Enter Student ID: ";
+        cin >> studentId;
+        
+        if (attendanceTable.find(studentId) == attendanceTable.end())
 {
-private:
-    string StudentId;
-    string Name;
-    string Date;
-    string Status;
-public:
-    void Attendancemark()
-    {
-        cout << "Enter student id: " << endl;
-        cin >> StudentId;
-        cout << "Enter student name: " << endl;
-        cin.ignore();
-        getline(cin,Name);
-        cout << "Enter present date: " << endl;
-        cin >> Date;
-        cout << "Enter status (Present/Absent): " << endl;
-        cin >> Status;
-        cout << "Attendance marked successfully! " << endl;
-    }
-    
-};
-int main()
-{
-    Admin admin;
-
-         if(admin.login()==1)
-    {
-        cout << "Login Successful!" << endl;
-
-        Attendance at;
-        at.Attendancemark();
-    }
-    else
-    {
-        cout << "Invalid Credentials!" << endl;
-    }
-
-
-    return 0;
+        cout << "Student is not registered!" << endl;
+        return;
 }
-
-
-
-
-
+cout << "Student is Registered!" << endl;
+cout << "Attendance: " << attendanceTable[studentId] << endl;
+   }
