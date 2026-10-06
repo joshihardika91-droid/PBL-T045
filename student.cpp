@@ -142,6 +142,46 @@ public:
 };
 
 
+class StudentInterface
+{
+private:
+    StudentProfile currentstudent;
+    bool loggedin;
+
+    bool loadstudent(string id) {
+        ifstream fin("students.txt");
+
+        string line;
+
+        while(getline(fin, line)) {
+            stringstream ss(line);
+
+            StudentProfile s;
+
+            getline(ss, s.id, '|');
+            getline(ss, s.name, '|');
+            getline(ss, s.room, '|');
+            getline(ss, s.course, '|');
+            getline(ss, s.phone, '|');
+            getline(ss, s.guardianphone, '|');
+            getline(ss, s.email, '|');
+            getline(ss, s.password, '|');
+
+            if(s.id == id) {
+                currentstudent = s;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+public:
+
+    StudentInterface() {
+        loggedin = false;
+    }
+};
 
 
 
