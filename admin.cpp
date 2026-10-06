@@ -1,4 +1,5 @@
 #include<iostream>
+#include<unordered_map>
 #include<string>
 using namespace std;
 
@@ -68,7 +69,7 @@ class Admin
 
 };
 
-
+unordered_map<string, string>attendanceTable;
 class Attendance
 {
 private:
@@ -88,6 +89,7 @@ public:
         cin >> Date;
         cout << "Enter status (Present/Absent): " << endl;
         cin >> Status;
+        attendanceTable[StudentId] = Status;
         cout << "Attendance marked successfully! " << endl;
     }
     
@@ -187,6 +189,7 @@ int main()
 
     return 0;
 }
+
 
 
 

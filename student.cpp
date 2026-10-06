@@ -88,3 +88,52 @@ class Student:public User
         float amount;
         
    }
+
+
+   class Attendance
+{
+private:
+    string StudentId;
+    string Name;
+    string Date;
+    string Status;
+public:
+    void Attendancemark()
+    {
+        cout << "Enter student id: " << endl;
+        cin >> StudentId;
+        cout << "Enter student name: " << endl;
+        cin.ignore();
+        getline(cin,Name);
+        cout << "Enter present date: " << endl;
+        cin >> Date;
+        cout << "Enter status (Present/Absent): " << endl;
+        cin >> Status;
+        cout << "Attendance marked successfully! " << endl;
+    }
+    
+};
+int main()
+{
+    Admin admin;
+
+         if(admin.login()==1)
+    {
+        cout << "Login Successful!" << endl;
+
+        Attendance at;
+        at.Attendancemark();
+    }
+    else
+    {
+        cout << "Invalid Credentials!" << endl;
+    }
+
+
+    return 0;
+}
+
+
+
+
+
