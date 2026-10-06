@@ -113,6 +113,37 @@ public:
     }
     
 };
+
+
+class StudentProfile
+{
+public:
+    string id;
+    string name;
+    string room;
+    string course;
+    string phone;
+    string guardianphone;
+    string email;
+    string password;
+
+    void display() {
+        cout << "\n--------STUDENT PROFILE--------" << endl;
+        cout << "Student ID:"<<id<<endl;
+        cout << "Name:"<<name<<endl;
+        cout << "Course:"<<course<<endl;
+        cout << "Room No:"<<room<<endl;
+        cout << "Phone:"<<phone<<endl;
+        cout << "Guardian Phone no:"<<guardianphone<<endl;
+        cout << "Email:"<<email<<endl;
+        cout << "--------------------------------" << endl;
+    }
+};
+
+
+
+
+
 int main()
 {
     Admin admin;
