@@ -181,6 +181,32 @@ public:
     StudentInterface() {
         loggedin = false;
     }
+
+bool login() {
+        string id;
+        string pass;
+
+        cout << "\n--------STUDENT LOGIN--------" << endl;
+
+        cout << "Enter Student ID: ";
+        cin >> id;
+
+        cout << "Enter Password: ";
+        cin >> pass;
+
+        if(loadstudent(id) && currentstudent.password == pass) {
+            loggedin = true;
+
+            cout << "Login successful! Welcome "
+                 << currentstudent.name << endl;
+
+            return true;
+        }
+
+        cout << "Invalid ID or Password!" << endl;
+
+        return false;
+    }
 };
 
 
