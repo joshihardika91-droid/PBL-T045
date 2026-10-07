@@ -207,6 +207,11 @@ bool login() {
 
         return false;
     }
+    void viewProfile(){
+        if(!loggedin){
+            cout << "Please login first!"<<endl;
+            return;}
+        currentstudent.display();}
 };
 
 
