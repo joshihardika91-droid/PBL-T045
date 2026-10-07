@@ -229,6 +229,14 @@ bool login() {
             else {
             cout<<"Logout cancelled."<<endl;}
     }
+    
+
+    bool isLoggedIn(){
+        return loggedin;
+    }
+
+    string getCurrentId() {
+        return currentstudent.id;}
 };
 
 
