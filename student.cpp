@@ -212,6 +212,23 @@ bool login() {
             cout << "Please login first!"<<endl;
             return;}
         currentstudent.display();}
+
+    void logout(){
+        char confirm;
+        cout<<"Are you sure you want to logout?(yes/no):";
+        cin>>confirm;
+        if(confirm=='y'||confirm=='Y'){
+            ofstream fout("logout_log.txt",ios::app);
+
+            fout<<currentstudent.id<<"logged out"<<endl;
+            fout.close();
+
+            cout<<"Goodbye"<<currentstudent.name<<"!You have been logged out."<<endl;
+            currentstudent=StudentProfile();
+            loggedin=false;}
+            else {
+            cout<<"Logout cancelled."<<endl;}
+    }
 };
 
 
