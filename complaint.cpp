@@ -1,11 +1,17 @@
-#include<iostream>
-#include<string>
-using namespace std;
+#include "complaint.h"
 
-class Complaint
+ComplaintManagement::ComplaintManagement()
 {
-private:
-    string studentId;
-    string complaint;
-    string status;
-};
+    complaintCount = 0;
+}
+
+void Complaint::submit_Complaint()
+{
+    cout << "Enter Student ID: ";
+    cin >> studentId;
+   cout << "Enter Complaint: ";
+    cin.ignore();
+    getline(cin, complaintText);
+    status = "Pending";
+    cout << "Complaint submitted successfully!" << endl;
+}
