@@ -40,7 +40,6 @@ class Admin
             cout<<"Not Authorized";
             return 0;
 
-            
         }
 
     void ChangePassword()

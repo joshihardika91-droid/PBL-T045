@@ -20,13 +20,20 @@ public:
 };
 class Fee:public Student{
     private :string status;
-             float amount;
+             float feeamount;
              string date;
              float due;
     public:void checkdues();
             void makepayment();
-            
+            void generateinvoice();
+            void setdue(float);
+            void setstatus(string);
+            void setdate(string);
+            string getdate(){return date;}
+            string getstatus(){return status;}
+            float getdue(){return due;}
+            float getfeeamount(){return feeamount;}
              
-};
+};;
 
 #endif

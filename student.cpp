@@ -2,7 +2,7 @@
 #include<string>
 #include "User.h"
 #include"student.h"
-#include<fstream>
+ #include<fstream>
 #include<sstream>
 
 using namespace std;
@@ -85,11 +85,7 @@ class Student:public User
         
         }
     }
-   void makepayement(){
-        float amount;
-        
-   }
-
+   
 
    class Attendance
 {
