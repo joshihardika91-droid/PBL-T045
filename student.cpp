@@ -3,7 +3,8 @@
 #include<string>
 #include "User.h"
 #include"student.h"
-
+ #include<fstream>
+#include<sstream>
 
 using namespace std;
 class Student:public User
@@ -101,6 +102,221 @@ class Student:public User
 {
         cout << "Student is not registered!" << endl;
         return;
+   
+
+   class Attendance
+{
+private:
+    string StudentId;
+    string Name;
+    string Date;
+    string Status;
+public:
+    void Attendancemark()
+    {
+        cout << "Enter student id: " << endl;
+        cin >> StudentId;
+        cout << "Enter student name: " << endl;
+        cin.ignore();
+        getline(cin,Name);
+        cout << "Enter present date: " << endl;
+        cin >> Date;
+        cout << "Enter status (Present/Absent): " << endl;
+        cin >> Status;
+        cout << "Attendance marked successfully! " << endl;
+    }
+    
+};
+
+int main()
+{
+    Admin admin;
+
+         if(admin.login()==1)
+    {
+        cout << "Login Successful!" << endl;
+
+        Attendance at;
+        at.Attendancemark();
+    }
+    else
+    {
+        cout << "Invalid Credentials!" << endl;
+    }
+
+
+    return 0;
+
+}
+cout << "Student is Registered!" << endl;
+cout << "Attendance: " << attendanceTable[studentId] << endl;
+
+
+class StudentProfile
+{
+public:
+    string id;
+    string name;
+    string room;
+    string course;
+    string phone;
+    string guardianphone;
+    string email;
+    string password;
+
+    void display() {
+        cout << "\n--------STUDENT PROFILE--------" << endl;
+        cout << "Student ID:"<<id<<endl;
+        cout << "Name:"<<name<<endl;
+        cout << "Course:"<<course<<endl;
+        cout << "Room No:"<<room<<endl;
+        cout << "Phone:"<<phone<<endl;
+        cout << "Guardian Phone no:"<<guardianphone<<endl;
+        cout << "Email:"<<email<<endl;
+        cout << "--------------------------------" << endl;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class StudentInterface
+{
+private:
+    StudentProfile currentstudent;
+    bool loggedin;
+
+    bool loadstudent(string id) {
+        ifstream fin("students.txt");
+
+        string line;
+
+        while(getline(fin, line)) {
+            stringstream ss(line);
+
+            StudentProfile s;
+
+            getline(ss, s.id, '|');
+            getline(ss, s.name, '|');
+            getline(ss, s.room, '|');
+            getline(ss, s.course, '|');
+            getline(ss, s.phone, '|');
+            getline(ss, s.guardianphone, '|');
+            getline(ss, s.email, '|');
+            getline(ss, s.password, '|');
+
+            if(s.id == id) {
+                currentstudent = s;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+public:
+
+    StudentInterface() {
+        loggedin = false;
+    }
+
+bool login() {
+        string id;
+        string pass;
+
+        cout << "\n--------STUDENT LOGIN--------" << endl;
+
+        cout << "Enter Student ID: ";
+        cin >> id;
+
+        cout << "Enter Password: ";
+        cin >> pass;
+
+        if(loadstudent(id) && currentstudent.password == pass) {
+            loggedin = true;
+
+            cout << "Login successful! Welcome "
+                 << currentstudent.name << endl;
+
+            return true;
+        }
+
+        cout << "Invalid ID or Password!" << endl;
+
+        return false;
+    }
+    void viewProfile(){
+        if(!loggedin){
+            cout << "Please login first!"<<endl;
+            return;}
+        currentstudent.display();}
+
+    void logout(){
+        char confirm;
+        cout<<"Are you sure you want to logout?(yes/no):";
+        cin>>confirm;
+        if(confirm=='y'||confirm=='Y'){
+            ofstream fout("logout_log.txt",ios::app);
+
+            fout<<currentstudent.id<<"logged out"<<endl;
+            fout.close();
+
+            cout<<"Goodbye"<<currentstudent.name<<"!You have been logged out."<<endl;
+            currentstudent=StudentProfile();
+            loggedin=false;}
+            else {
+            cout<<"Logout cancelled."<<endl;}
+    }
+    
+
+    bool isLoggedIn(){
+        return loggedin;
+    }
+
+    string getCurrentId() {
+        return currentstudent.id;}
+};
+
+
+
+int main()
+{
+    Admin admin;
+
+         if(admin.login()==1)
+    {
+        cout << "Login Successful!" << endl;
+
+        Attendance at;
+        at.Attendancemark();
+    }
+    else
+    {
+        cout << "Invalid Credentials!" << endl;
+    }
+
+
+    return 0;
 }
 cout << "Student is Registered!" << endl;
 cout << "Attendance: " << attendanceTable[studentId] << endl;

@@ -14,18 +14,16 @@
 
 typedef struct Record
 {
-    char date;
-    char status
+    char date[DATE_LEN];
+    char status;
     struct Record *next;
 }Record;
  
 typedef struct Student
 {
-    char id;
-    char name;
+    char id[ID_LEN];
+    char name[NAME_LEN];
     Record *head;
     struct Student *next;
 }Student;
-
-
-}
+#endif
