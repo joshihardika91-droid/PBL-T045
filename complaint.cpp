@@ -45,19 +45,28 @@ void ComplaintManagement::submit(){
     complaints[rear].submit_Complaint();
 }
 void ComplaintManagement::view_Complaints(){
-    for(int i = 0; i < complaintCount; i++)
-    {
-        cout << "\nComplaint Number: " << i + 1 << endl;
+    if (front == -1)
+    {   cout << "No complaints available!" << endl;
+        return;
+    }
+
+    for (int i = front; i <= rear; i++)
+    {    cout << "\nComplaint Number: " << i + 1 << endl;
         complaints[i].display_Complaint();
     }
 }
 
-void ComplaintManagement::resolve(){
-    int n;
-view_Complaints();
+void ComplaintManagement::resolve()
+{if (front == -1)
+    {
+        cout << "No complaints to resolve!" << endl;
+        return;
+    }
 
-    cout << "\nEnter complaint number to resolve: ";
-    cin >> n;
-if(n > 0 && n <= complaintCount)
-        complaints[n - 1].resolve_Complaint();
+    complaints[front].resolve_Complaint();
+    front++;
+
+    if (front > rear)
+        front = rear = -1;
+    
 }
