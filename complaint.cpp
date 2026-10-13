@@ -27,14 +27,23 @@ void Complaint::resolve_Complaint(){
     cout << "Complaint marked as resolved" << endl;
 }
 
-void ComplaintManagement::submit(){
-    if(complaintCount < 100)
-    {
-        complaints[complaintCount].submit_Complaint();
-        complaintCount++;
-    }
+ComplaintManagement::ComplaintManagement(){
+    front = -1;
+    rear = -1;
 }
 
+void ComplaintManagement::submit(){
+    if (rear == 99)
+    { cout << "Complaint queue is full!" << endl;
+        return;
+    }
+
+    if (front == -1)
+        front = 0;
+
+    rear++;
+    complaints[rear].submit_Complaint();
+}
 void ComplaintManagement::view_Complaints(){
     for(int i = 0; i < complaintCount; i++)
     {

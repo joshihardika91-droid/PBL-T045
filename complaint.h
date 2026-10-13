@@ -23,6 +23,8 @@ class ComplaintManagement
 private:
     Complaint complaints[100];
     int complaintCount;
+        int front, rear;
+
 
 public:
     ComplaintManagement();
