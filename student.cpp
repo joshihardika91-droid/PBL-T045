@@ -5,6 +5,7 @@
 #include"student.h"
  #include<fstream>
 #include<sstream>
+#include "complaint.h"
 
 using namespace std;
 class Student:public User
@@ -56,18 +57,14 @@ class Student:public User
             }while(choice<=8);
         }
 
-        void Complaint(){
+        void SubmitComplaint(){
         string complaint;
 
         cout << "\n-------- COMPLAINT SECTION --------" << endl;
 
-        cout << "Enter your complaint: ";
-        cin.ignore();
-        getline(cin, complaint);
-
-        cout << "Complaint submitted successfully!" << endl;
-         }
-
+         Complaint x;
+         x.submit_Complaint();
+        }
     };
     void feemanagement(){
         int ch,i;
