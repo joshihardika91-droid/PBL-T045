@@ -42,3 +42,13 @@ void ComplaintManagement::view_Complaints(){
         complaints[i].display_Complaint();
     }
 }
+
+void ComplaintManagement::resolve(){
+    int n;
+view_Complaints();
+
+    cout << "\nEnter complaint number to resolve: ";
+    cin >> n;
+if(n > 0 && n <= complaintCount)
+        complaints[n - 1].resolve_Complaint();
+}
