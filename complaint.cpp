@@ -1,4 +1,5 @@
 #include "complaint.h"
+#include<string>
 
 ComplaintManagement::ComplaintManagement()
 {
