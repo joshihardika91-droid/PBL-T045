@@ -1,9 +1,12 @@
 #include"student.h"
+#define MAX 400
 class Feehandler{
     public:Fee *feerecords;
+            int hashtable[recordcount];
            void sortbyduefees(int);
            void findrecords();
            void displayfee(); 
+           void createhashfunction(int);
 };
 void Feehandler::sortbyduefees(int recordcount){
     int i=0,j=0,min;
@@ -20,4 +23,19 @@ void Feehandler::sortbyduefees(int recordcount){
         feerecords[min]=temp;
 
     }
+}
+void Feehandler::createhashfunction(int recordcount){
+    int i=0,s_id,index;
+    for(i=0;i<recordcount;i++){
+        hashtable[i]=-1;
+    }
+    for (i=0;i<recordcount;i++){
+         s_id=feerecords[i].getStudentID();
+         index=s_id%recordcount;
+         while(hashtable[index]!=-1){
+            index=(index+1)%recordcount;
+         }
+    hashtable[index]=i
+    }
+
 }
