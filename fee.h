@@ -35,7 +35,23 @@ void Feehandler::createhashfunction(int recordcount){
          while(hashtable[index]!=-1){
             index=(index+1)%recordcount;
          }
-    hashtable[index]=i
+    hashtable[index]=i;
     }
 
+}
+void Feehandler::findrecords(){
+    int id,index,ridx;
+    cout<<"Enter student ID";
+    cin>>id;
+    index=id%recordcount;
+    while(hashtable[index]!=-1){
+        ridx=hashtable[index];
+        if(feerecords[ridx].getStudentID()==id){
+        
+        }
+        index=(index+1)%recordcount;
+
+    }
+    
+    cout<<"No Record found"<<endl;
 }
