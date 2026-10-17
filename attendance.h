@@ -26,4 +26,19 @@ typedef struct Student
     Record *head;
     struct Student *next;
 }Student;
-#endif
+
+typedef struct ACTION
+{
+    char id[ID_LEN];
+    char date[DATA_LEN];
+    int existed;
+    char oldStatus;
+    struct Actin *next;
+}Action;
+
+typedef struct 
+{
+    Student *s;
+    double per;
+}Entry;
+
