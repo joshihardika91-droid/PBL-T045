@@ -42,3 +42,33 @@ typedef struct
     double per;
 }Entry;
 
+static Student *table[TABLE_SIZE];
+static Action  *undoTop = NULL;
+
+static unsigned hashId(const char *s) {
+    unsigned long h = 5381;
+    int c;
+    while ((c = (unsigned char)*s++)) {
+        h = ((h << 5) + h) + c;
+    }
+    return (unsigned)(h % TABLE_SIZE);
+}
+
+static Student *findStudent(const char *id) {
+    for (Student *s = table[hashId(id)]; s; s = s->next) {
+        if (strcmp(s->id, id) == 0) {
+            return s;
+        }
+    }
+    return NULL;
+}
+
+static Student *createStudent(const char *id, const char *name) {
+    Student *s = (Student *)calloc(1, sizeof(Student));
+    strncpy(s->id, id, ID_LEN - 1);
+    strncpy(s->name, name, NAME_LEN - 1);
+    unsigned i = hashId(s->id);
+    s->next = table[i];
+    table[i] = s;
+    return s;
+}
