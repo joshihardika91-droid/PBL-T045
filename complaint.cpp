@@ -1,10 +1,6 @@
 #include "complaint.h"
 #include<string>
 
-ComplaintManagement::ComplaintManagement()
-{
-    complaintCount = 0;
-}
 
 void Complaint::submit_Complaint(){
     cout << "Enter Student ID: ";
@@ -28,6 +24,7 @@ void Complaint::resolve_Complaint(){
 }
 
 ComplaintManagement::ComplaintManagement(){
+     complaintCount = 0;
     front = -1;
     rear = -1;
 }

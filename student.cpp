@@ -8,16 +8,8 @@
 #include "complaint.h"
 
 using namespace std;
-class Student:public User
-{   private:
-    string StudentId;
-    string Name;
-    string Course;
-    string RoomNo;
-    ComplaintManagement complaintSystem;
 
-    public:
-    void menu()
+    void Student:: menu()
     {
         int choice;
         do{
@@ -58,13 +50,13 @@ class Student:public User
             }while(choice!=8);
         }
 
-        void SubmitComplaint()
+        void Student::SubmitComplaint()
   {
     cout << "\n-------- COMPLAINT SECTION --------" << endl;
     complaintSystem.submit();
    }
     
-    void feemanagement(){
+    void Student::feemanagement(){
         int ch,i;
         Fee fees[MAX];
         cout<<"\n---------FEE PORTAL----------"<<endl;
@@ -81,11 +73,11 @@ class Student:public User
         
         }
     }
-   void makepayement(){
+   void Student::makepayement(){
         float amount;
         
    }
-};
+
    extern unordered_map<string, string> attendanceTable;
    void ViewAttendance()
    {
@@ -104,15 +96,7 @@ cout << "Attendance: " << attendanceTable[StudentId] << endl;
 
    
 
-   class Attendance
-{
-private:
-    string StudentId;
-    string Name;
-    string Date;
-    string Status;
-public:
-    void Attendancemark()
+ void Attendance:: Attendancemark()
     {
         cout << "Enter student id: " << endl;
         cin >> StudentId;
@@ -130,19 +114,9 @@ public:
 
 
 
-class StudentProfile
-{
-public:
-    string id;
-    string name;
-    string room;
-    string course;
-    string phone;
-    string guardianphone;
-    string email;
-    string password;
 
-    void display() {
+
+   void StudentProfile::display() {
         cout << "\n--------STUDENT PROFILE--------" << endl;
         cout << "Student ID:"<<id<<endl;
         cout << "Name:"<<name<<endl;
@@ -178,13 +152,8 @@ public:
 
 
 
-class StudentInterface
-{
-private:
-    StudentProfile currentstudent;
-    bool loggedin;
 
-    bool loadstudent(string id) {
+    bool StudentInterface:: loadstudent(string id) {
         ifstream fin("students.txt");
 
         string line;
@@ -212,13 +181,13 @@ private:
         return false;
     }
 
-public:
 
-    StudentInterface() {
+
+    StudentInterface:: StudentInterface() {
         loggedin = false;
     }
 
-bool login() {
+bool   StudentInterface:: login() {
         string id;
         string pass;
 
@@ -243,13 +212,13 @@ bool login() {
 
         return false;
     }
-    void viewProfile(){
+    void  StudentInterface::  viewProfile(){
         if(!loggedin){
             cout << "Please login first!"<<endl;
             return;}
         currentstudent.display();}
 
-    void logout(){
+    void   StudentInterface:: logout(){
         char confirm;
         cout<<"Are you sure you want to logout?(yes/no):";
         cin>>confirm;
@@ -267,13 +236,13 @@ bool login() {
     }
     
 
-    bool isLoggedIn(){
+    bool   StudentInterface:: isLoggedIn(){
         return loggedin;
     }
 
-    string getCurrentId() {
+    string  StudentInterface::  getCurrentId() {
         return currentstudent.id;}
-};
+
 
 
 
