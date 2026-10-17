@@ -72,3 +72,47 @@ static Student *createStudent(const char *id, const char *name) {
     table[i] = s;
     return s;
 }
+
+static int setRecord(Student *s, const char *date, char status, char *old) {
+    Record *prev = NULL, *cur = s->head;
+    while (cur && strcmp(cur->date, date) < 0) {
+        prev = cur;
+        cur = cur->next;
+    }
+
+    if (cur && strcmp(cur->date, date) == 0) {
+        *old = cur->status;
+        cur->status = status;
+        return 1;
+    }
+
+    Record *r = (Record *)malloc(sizeof(Record));
+    strncpy(r->date, date, DATE_LEN - 1);
+    r->date[DATE_LEN - 1] = '\0';
+    r->status = status;
+    r->next = cur;
+    if (prev) {
+        prev->next = r;
+    } else {
+        s->head = r;
+    }
+    *old = 0;
+    return 0;
+}
+
+static void removeRecord(Student *s, const char *date) {
+    Record *prev = NULL, *cur = s->head;
+    while (cur && strcmp(cur->date, date) != 0) {
+        prev = cur;
+        cur = cur->next;
+    }
+    if (!cur) {
+        return;
+    }
+    if (prev) {
+        prev->next = cur->next;
+    } else {
+        s->head = cur->next;
+    }
+    free(cur);
+}
