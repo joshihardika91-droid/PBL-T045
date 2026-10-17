@@ -116,3 +116,47 @@ static void removeRecord(Student *s, const char *date) {
     }
     free(cur);
 }
+
+static int isValidDate(const char *d) {
+    if (strlen(d) != 10 || d[4] != '-' || d[7] != '-') {
+        return 0;
+    }
+    for (int i = 0; i < 10; i++) {
+        if (i != 4 && i != 7 && !isdigit((unsigned char)d[i])) {
+            return 0;
+        }
+    }
+    int m = atoi(d + 5), day = atoi(d + 8);
+    return m >= 1 && m <= 12 && day >= 1 && day <= 31;
+}
+
+static char normalizeStatus(const char *s) {
+    char t[16];
+    int i;
+    for (i = 0; s[i] && i < 15; i++) {
+        t[i] = (char)tolower((unsigned char)s[i]);
+    }
+    t[i] = '\0';
+    if (!strcmp(t, "p") || !strcmp(t, "present")) {
+        return 'P';
+    }
+    if (!strcmp(t, "a") || !strcmp(t, "absent")) {
+        return 'A';
+    }
+    return 0;
+}
+
+static void readLine(const char *prompt, char *buf, int size) {
+    printf("%s", prompt);
+    if (!fgets(buf, size, stdin)) {
+        buf[0] = '\0';
+        return;
+    }
+    buf[strcspn(buf, "\r\n")] = '\0';
+}
+
+static int readInt(const char *prompt) {
+    char buf[32];
+    readLine(prompt, buf, sizeof(buf));
+    return atoi(buf);
+}
