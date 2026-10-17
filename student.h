@@ -6,7 +6,7 @@
 class Student : public User
 {
 private:
-    string StudentId;
+    int  StudentId;
     string Name;
     string Course;
     string RoomNo;
@@ -17,6 +17,7 @@ public:
     void ViewProfile();
     void Complaint();
     void menu();
+    int getStudentID(){return StudentId;}
 };
 class Fee:public Student{
     private :string status;

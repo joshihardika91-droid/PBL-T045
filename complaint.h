@@ -13,7 +13,7 @@ private:
     string status;
 
 public:
-    void submit_complaint();
+    void submit_Complaint();
     void display_Complaint();
     void resolve_Complaint();
 };
@@ -23,6 +23,8 @@ class ComplaintManagement
 private:
     Complaint complaints[100];
     int complaintCount;
+        int front, rear;
+
 
 public:
     ComplaintManagement();
