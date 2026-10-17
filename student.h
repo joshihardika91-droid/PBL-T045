@@ -10,12 +10,14 @@ private:
     string Name;
     string Course;
     string RoomNo;
+    ComplaintManagement complaintSystem;
+
 
 public:
     void Register();
     int Login();
     void ViewProfile();
-    void Complaint();
+    void SubmitComplaint();
     void menu();
     int getStudentID(){return StudentId;}
 };

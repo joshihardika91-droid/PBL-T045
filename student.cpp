@@ -14,6 +14,7 @@ class Student:public User
     string Name;
     string Course;
     string RoomNo;
+    ComplaintManagement complaintSystem;
 
     public:
     void menu()
@@ -44,8 +45,8 @@ class Student:public User
                         break;
                 case 4: cout << "Displaying Mess Schedule" << endl;
                         break;
-                case 5:Complaint();
-                        break;
+                case 5:SubmitComplaint();
+                break;
                 case 6:cout << "Displaying Fee Status" << endl;
                        break;
                 case 7: ChangePassword(); //inherited from user class
@@ -54,18 +55,15 @@ class Student:public User
                         break;
                 default: cout << "Invalid choice!" << endl;
             }
-            }while(choice<=8);
+            }while(choice!=8);
         }
 
-        void SubmitComplaint(){
-        string complaint;
-
-        cout << "\n-------- COMPLAINT SECTION --------" << endl;
-
-         Complaint x;
-         x.submit_Complaint();
-        }
-    };
+        void SubmitComplaint()
+  {
+    cout << "\n-------- COMPLAINT SECTION --------" << endl;
+    complaintSystem.submit();
+   }
+    
     void feemanagement(){
         int ch,i;
         Fee fees[MAX];
@@ -87,18 +85,23 @@ class Student:public User
         float amount;
         
    }
-
+};
    extern unordered_map<string, string> attendanceTable;
    void ViewAttendance()
    {
         string StudentId;
         cout << "Enter Student ID: ";
-        cin >> studentId;
+        cin >> StudentId;
         
-        if (attendanceTable.find(studentId) == attendanceTable.end())
-{
+        if (attendanceTable.find(StudentId) == attendanceTable.end())
+     {
         cout << "Student is not registered!" << endl;
         return;
+    }
+    cout << "Student is Registered!" << endl;
+cout << "Attendance: " << attendanceTable[StudentId] << endl;
+   }
+
    
 
    class Attendance
@@ -125,28 +128,6 @@ public:
     
 };
 
-int main()
-{
-    Admin admin;
-
-         if(admin.login()==1)
-    {
-        cout << "Login Successful!" << endl;
-
-        Attendance at;
-        at.Attendancemark();
-    }
-    else
-    {
-        cout << "Invalid Credentials!" << endl;
-    }
-
-
-    return 0;
-
-}
-cout << "Student is Registered!" << endl;
-cout << "Attendance: " << attendanceTable[studentId] << endl;
 
 
 class StudentProfile
@@ -298,23 +279,17 @@ bool login() {
 
 int main()
 {
-    Admin admin;
+    StudentInterface studentLogin;
 
-         if(admin.login()==1)
+    if (studentLogin.login())
     {
-        cout << "Login Successful!" << endl;
-
-        Attendance at;
-        at.Attendancemark();
+        Student student;
+        student.menu();
     }
     else
     {
-        cout << "Invalid Credentials!" << endl;
+        cout << "Login failed. Exiting..." << endl;
     }
-
 
     return 0;
 }
-cout << "Student is Registered!" << endl;
-cout << "Attendance: " << attendanceTable[studentId] << endl;
-   }
