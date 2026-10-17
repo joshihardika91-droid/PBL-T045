@@ -160,3 +160,52 @@ static int readInt(const char *prompt) {
     readLine(prompt, buf, sizeof(buf));
     return atoi(buf);
 }
+
+static void pushAction(const char *id, const char *date, int existed, char old) {
+    Action *a = (Action *)malloc(sizeof(Action));
+    strncpy(a->id, id, ID_LEN - 1);
+    a->id[ID_LEN - 1] = '\0';
+    strncpy(a->date, date, DATE_LEN - 1);
+    a->date[DATE_LEN - 1] = '\0';
+    a->existed = existed;
+    a->oldStatus = old;
+    a->next = undoTop;
+    undoTop = a;
+}
+
+static int markAttendance(const char *id, const char *name,
+                          const char *date, char status) {
+    if (id[0] == '\0' || !isValidDate(date) || (status != 'P' && status != 'A')) {
+        return 0;
+    }
+
+    Student *s = findStudent(id);
+    if (!s) {
+        s = createStudent(id, name);
+    }
+
+    char old;
+    int existed = setRecord(s, date, status, &old);
+    pushAction(id, date, existed, old);
+    return 1;
+}
+
+static int undoLast(void) {
+    if (!undoTop) {
+        return 0;
+    }
+    Action *a = undoTop;
+    undoTop = a->next;
+
+    Student *s = findStudent(a->id);
+    if (s) {
+        if (a->existed) {
+            char tmp;
+            setRecord(s, a->date, a->oldStatus, &tmp);
+        } else {
+            removeRecord(s, a->date);
+        }
+    }
+    free(a);
+    return 1;
+}
