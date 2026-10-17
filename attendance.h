@@ -26,4 +26,39 @@ typedef struct Student
     Record *head;
     struct Student *next;
 }Student;
+
+typedef struct Action
+{
+    char id[ID_LEN];
+    char date[DATE_LEN];
+    int existed;
+    char oldStatus;
+    struct Action *next;
+}Action;
+
+typedef struct{
+    Student *s;
+    double per;
+}Entry;
+
+static Student *table[TABLE_SIZE];
+static Action *undoTop = NULL;
+
+static unsigned hashld(const char *s)
+{
+    unsigned long h = 5381;
+    int c;
+    while((c = (unsigned char)*s++))
+    h = ((h << 5) + h) + c;
+    return(unsigned)(h % TABLE_SIZE);
+}
+
+static Student *findStudent(const char*id)
+{
+    for(Student *s = table[hashld(id)]; s; s = s->next){
+    if(strcmp(s->id,id) == 0){}
+    return s;
+}
+    return NULL;
+}
 #endif
