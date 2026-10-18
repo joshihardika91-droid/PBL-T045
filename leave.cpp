@@ -210,3 +210,49 @@ void LeaveManager::viewAllLeaves() {
         allLeaves[i].display();
     }
 }
+
+
+void LeaveManager::studentMenu(string studentId, string studentName) {
+    int choice;
+    do {
+        cout << endl;
+        cout << "1. Apply for leave" << endl;
+        cout << "2. View my leaves" << endl;
+        cout << "3. Back" << endl;
+        cout << "Enter choice: ";
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == 1) {
+            applyLeave(studentId, studentName);
+        } else if (choice == 2) {
+            viewMyLeaves(studentId);
+        } else if (choice != 3) {
+            cout << "Invalid choice." << endl;
+        }
+    } while (choice != 3);
+}
+
+void LeaveManager::adminMenu() {
+    int choice;
+    do {
+        cout << endl;
+        cout << "1. View pending leaves" << endl;
+        cout << "2. Approve / reject next leave" << endl;
+        cout << "3. View all leaves" << endl;
+        cout << "4. Back" << endl;
+        cout << "Enter choice: ";
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == 1) {
+            viewPendingLeaves();
+        } else if (choice == 2) {
+            processNextLeave();
+        } else if (choice == 3) {
+            viewAllLeaves();
+        } else if (choice != 4) {
+            cout << "Invalid choice." << endl;
+        }
+    } while (choice != 4);
+}
