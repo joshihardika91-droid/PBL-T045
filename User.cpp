@@ -39,11 +39,8 @@ int  User::userCount=0;
             cout << "Enter password: " << endl;
             cin >> newUser.Password;
 
-            cout << "Enter role (admin/warden/student): " << endl;
-            cin >> newUser.Role;
-            if(newUser.Role != "admin" &&
-   newUser.Role != "warden" &&
-   newUser.Role != "student")
+            newUser.Role="Student";
+            newUser.Status="Pending";
 {
     cout << "Invalid role!" << endl;
     return;
@@ -141,4 +138,10 @@ void User::ViewPendingUsers()
         cout << "No pending registrations." << endl;
     }
 }
-
+void User::UpdateStatus(){
+    int ch,f=0;
+    string id;
+    cout<<"Enter id ";
+    cin>>id;
+    for(int i)
+}
