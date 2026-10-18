@@ -103,3 +103,66 @@ void LeaveManager::loadData() {
 
     nextId = allLeaves.size() + 1;
 }
+
+
+void LeaveManager::saveData() {
+    ofstream fout("leaves.txt");
+    for (int i = 0; i < allLeaves.size(); i++) {
+        allLeaves[i].saveToFile(fout);
+    }
+    fout.close();
+}
+
+void LeaveManager::applyLeave(string studentId, string studentName) {
+    string reason, fromDate, toDate;
+    int type;
+
+    cout << "Enter reason: ";
+    getline(cin, reason);
+    cout << "Enter start date (DD-MM-YYYY): ";
+    getline(cin, fromDate);
+    cout << "Enter end date (DD-MM-YYYY): ";
+    getline(cin, toDate);
+    cout << "Leave type (1 = Normal, 2 = Urgent): ";
+    cin >> type;
+    cin.ignore();
+
+    if (type != 2) {
+        type = 1;
+    }
+
+    Leave l(nextId, studentId, studentName, reason, fromDate, toDate, type);
+    allLeaves.push_back(l);
+    pending.push(make_pair(type, -nextId));
+    nextId++;
+    saveData();
+
+    cout << "Leave applied. Your Leave ID is " << l.getId() << endl;
+}
+
+void LeaveManager::viewMyLeaves(string studentId) {
+    bool found = false;
+    for (int i = 0; i < allLeaves.size(); i++) {
+        if (allLeaves[i].getStudentId() == studentId) {
+            allLeaves[i].display();
+            found = true;
+        }
+    }
+    if (found == false) {
+        cout << "You have no leave applications." << endl;
+    }
+}
+
+void LeaveManager::viewPendingLeaves() {
+    if (pending.empty()) {
+        cout << "No pending leaves." << endl;
+        return;
+    }
+
+    priority_queue<pair<int, int> > temp = pending;
+    while (!temp.empty()) {
+        int id = -temp.top().second;
+        allLeaves[id - 1].display();
+        temp.pop();
+    }
+}
