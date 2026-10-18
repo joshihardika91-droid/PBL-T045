@@ -9,5 +9,6 @@ class Admin
             string user;
 
             const string admin_user= "ADMIN";
-            const string admin_pass= "Hosttel@123";};
+            const string admin_pass= "Hosttel@123";
+    public :int login();};
 #endif 

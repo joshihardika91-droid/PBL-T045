@@ -12,6 +12,7 @@ class User
      string Name;
      string Password;
      string Role;
+     string Status;
 
      static User  *users;
      static int userCount ;
@@ -19,7 +20,8 @@ class User
     void Register();
     string Login();
     void ChangePassword();
-
+    void ViewPendingUsers();
+    void UpdateStatus();
 };
 
 #endif

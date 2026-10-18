@@ -117,3 +117,28 @@ int  User::userCount=0;
         return "";
     }
     
+void User::ViewPendingUsers()
+{
+    cout << "\n--- PENDING STUDENT REGISTRATIONS ---\n";
+
+    int  pending= 0;
+
+    for (int i = 0; i < userCount; i++)
+    {
+        if (users[i].Status == "Pending")
+        {
+            cout << "Student ID: " << users[i].UserId << endl;
+            cout << "Name: " << users[i].Name << endl;
+            cout << "Status: " << users[i].Status << endl;
+            cout << "-----------------------------\n";
+
+            pending = 1;
+        }
+    }
+
+    if (pending == 0)
+    {
+        cout << "No pending registrations." << endl;
+    }
+}
+
