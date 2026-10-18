@@ -209,3 +209,56 @@ static int undoLast(void) {
     free(a);
     return 1;
 }
+
+static double percentage(const Student *s) {
+    int total = 0, present = 0;
+    for (Record *r = s->head; r; r = r->next) {
+        total++;
+        if (r->status == 'P') {
+            present++;
+        }
+    }
+    return total ? present * 100.0 / total : 0.0;
+}
+
+static int viewStudent(const char *id) {
+    Student *s = findStudent(id);
+    if (!s) {
+        return 0;
+    }
+
+    int total = 0, present = 0;
+    printf("\nStudent ID : %s\nName       : %s\n", s->id, s->name);
+    printf("-----------------------------\n");
+    printf("%-15s%s\n", "Date", "Status");
+    for (Record *r = s->head; r; r = r->next) {
+        printf("%-15s%s\n", r->date, r->status == 'P' ? "Present" : "Absent");
+        total++;
+        if (r->status == 'P') {
+            present++;
+        }
+    }
+    printf("-----------------------------\n");
+    printf("Total classes : %d\nPresent       : %d\n", total, present);
+    printf("Percentage    : %.2f%%\n", percentage(s));
+    return 1;
+}
+
+static void viewByDate(const char *date) {
+    int any = 0;
+    printf("\nAttendance on %s\n", date);
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        for (Student *s = table[i]; s; s = s->next) {
+            for (Record *r = s->head; r; r = r->next) {
+                if (strcmp(r->date, date) == 0) {
+                    printf("%-10s %-20s %s\n", s->id, s->name,
+                           r->status == 'P' ? "Present" : "Absent");
+                    any = 1;
+                }
+            }
+        }
+    }
+    if (!any) {
+        printf("No records for this date.\n");
+    }
+}
