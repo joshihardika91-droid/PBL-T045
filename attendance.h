@@ -1,11 +1,10 @@
 #ifndef ATTENDANCE_H
 #define ATTENDANCE_H
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
 
 #define TABLE_SIZE 101
 #define ID_LEN 20
@@ -18,15 +17,15 @@ typedef struct Record
     char date[DATE_LEN];
     char status;
     struct Record *next;
-} Record;
-
+}Record;
+ 
 typedef struct AttStudent
 {
     char id[ID_LEN];
     char name[NAME_LEN];
     Record *head;
     struct AttStudent *next;
-} AttStudent;
+}Student;
 
 typedef struct Action
 {
@@ -35,18 +34,17 @@ typedef struct Action
     int existed;
     char oldStatus;
     struct Action *next;
-} Action;
+}Action;
 
-typedef struct
-{
+typedef struct{
     AttStudent *s;
     double per;
-} Entry;
+}Entry;
 
 void attendanceLoad(void);
 void attendanceSave(void);
 void attendanceCleanup(void);
 void adminAttendanceMenu(void);
-void studentViewAttendance(void);
+void StudentViewAttendance(void);
 
 #endif
