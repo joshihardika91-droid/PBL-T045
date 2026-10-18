@@ -19,25 +19,30 @@ typedef struct Record
     struct Record *next;
 }Record;
  
-typedef struct Student
+typedef struct AttStudent
 {
     char id[ID_LEN];
     char name[NAME_LEN];
     Record *head;
-    struct Student *next;
-}Student;
+    struct AttStudent *next;
+}AttStudent;
 
-typedef struct ACTION
+typedef struct Action
 {
     char id[ID_LEN];
-    char date[DATA_LEN];
+    char date[DATE_LEN];
     int existed;
     char oldStatus;
-    struct Actin *next;
+    struct Action *next;
 }Action;
 
 typedef struct 
 {
-    Student *s;
+    AttStudent *s;
     double per;
 }Entry;
+
+void attendanceMenu();
+void viewAttendance(const char *id);
+
+#endif
