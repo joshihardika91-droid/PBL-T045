@@ -2,7 +2,7 @@
 #define ADMIN_H
 #include<iostream>
 using namespace std;
-class Admin
+class Admin : public User
 {
     private:
             string password;
@@ -10,5 +10,14 @@ class Admin
 
             const string admin_user= "ADMIN";
             const string admin_pass= "Hosttel@123";
+    public:
+    int login();
+     int Authorise();
+     void adminMenu();
+    void ChangePassword();
+
+
+        
+        };
     public :int login();};
 #endif 

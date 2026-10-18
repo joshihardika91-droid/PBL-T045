@@ -4,9 +4,10 @@
 #include"admin.h"
 #include"User.h"
 using namespace std;
+#include "complaint.h"
+ComplaintManagement complaintSystem;
 
-
-          int Admin:: login()
+     int Admin:: login()
         {
         cout<<"------HOSTEL MANAGEMENT SYSTEM------"<<endl;
         cout<<"Admin login:"<<endl;
@@ -18,46 +19,125 @@ using namespace std;
 
         if(user==admin_user && password==admin_pass)
         return 1;
-        else
+       else
         return 0;
         }
 
-void adminMenu(){
-    int choice;
-    do{
-        cout<<"\n-------ADMIN MENU-------"<<endl;
-        cout<<"1. Manage Attendance"<<endl;
-        cout<<"2. Manage Mess Menu"<<endl;
-        cout<<"3. Approve Leave"<<endl;
-        cout<<"4. View Complaints"<<endl;
-        cout<<"5. Logout"<<endl;
+        
+        int Admin::  Authorise(){
+            string checkname,checkpass;
+            cout<<"Enter User name for verification";
+            cin>>checkname;
+            cout<<"Enter User name for verification";
+            cin>>checkpass;
+            if(checkname==admin_user&&admin_pass==checkpass){
+                return 1;
+            }
+            cout<<"Not Authorized";
+            return 0;
 
-        cout<<"Enter choice: ";
-        cin>>choice;
-
-        switch(choice){
-            case 1:
-                cout<<"Attendance Management"<<endl;
-                break;
-            case 2:
-                cout<<"Mess Menu Management"<< endl;
-                break;
-            case 3:
-                cout<<"Leave Approval"<<endl;
-                break;
-            case 4:
-                cout<<"Complaint Management"<<endl;
-                break;
-            case 5:
-                cout<<"Logged Out Successfully!!"<<endl;
-                break;
-            default:
-                cout<<"Invalid Choice!!"<<endl;
         }
 
-    } while(choice != 5);
-}
+    void Admin :: ChangePassword()
+    {
+        string oldpass,newpass;
+        cout<<"Enter old Password"<<endl;
+        cin>>oldpass;
 
+        if(oldpass == password)
+        {
+            cout<<"Enter New Password"<<endl;
+            cin>>newpass;
+
+            password=newpass;
+            cout<<"Password is successfully updated!"<<endl;
+        
+
+        }
+        else
+        {
+            cout<<"Wrong old Password"<<endl;
+        }
+    }
+
+ 
+
+
+unordered_map<string, string>attendanceTable;
+class Attendance
+{
+private:
+    string StudentId;
+    string Name;
+    string Date;
+    string Status;
+public:
+    void Attendancemark()
+    {
+        cout << "Enter student id: " << endl;
+        cin >> StudentId;
+        cout << "Enter student name: " << endl;
+        cin.ignore();
+        getline(cin,Name);
+        cout << "Enter present date: " << endl;
+        cin >> Date;
+        cout << "Enter status (Present/Absent): " << endl;
+        cin >> Status;
+        attendanceTable[StudentId] = Status;
+        cout << "Attendance marked successfully! " << endl;
+    }
+    
+};
+
+
+
+
+void Admin::adminMenu(){
+
+    int choice;
+    Attendance at;
+
+    do
+    {
+        cout << "\n-------ADMIN MENU-------" << endl;
+        cout << "1. Manage Attendance" << endl;
+        cout << "2. Manage Mess Menu" << endl;
+        cout << "3. Approve Leave" << endl;
+        cout << "4. View Complaints" << endl;
+        cout << "5. Logout" << endl;
+
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:
+                at.Attendancemark();
+                break;
+
+            case 2:
+                cout << "Mess Menu Management" << endl;
+                break;
+
+            case 3:
+                cout << "Leave Approval" << endl;
+                break;
+
+            case 4:
+                cout << "\n--- VIEW COMPLAINTS ---" << endl;
+                complaintSystem.view_Complaints();
+               break;
+
+            case 5:
+                cout << "Logged Out Successfully!" << endl;
+                break;
+
+            default:
+                cout << "Invalid Choice!" << endl;
+        }
+
+    } while (choice != 5);
+}
 
 
 
