@@ -301,3 +301,131 @@ static void showDefaulters(double threshold) {
     }
     free(arr);
 }
+
+static void attendanceSave(void) {
+    FILE *f = fopen(FILE_NAME, "w");
+    if (!f) {
+        printf("Could not save file!\n");
+        return;
+    }
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        for (Student *s = table[i]; s; s = s->next) {
+            for (Record *r = s->head; r; r = r->next) {
+                fprintf(f, "%s|%s|%s|%c\n", s->id, s->name, r->date, r->status);
+            }
+        }
+    }
+    fclose(f);
+}
+
+static void attendanceLoad(void) {
+    FILE *f = fopen(FILE_NAME, "r");
+    if (!f) {
+        return;
+    }
+    char line[200];
+    while (fgets(line, sizeof(line), f)) {
+        char *id   = strtok(line, "|\n");
+        char *name = strtok(NULL, "|\n");
+        char *date = strtok(NULL, "|\n");
+        char *st   = strtok(NULL, "|\n");
+        if (!id || !name || !date || !st) {
+            continue;
+        }
+
+        Student *s = findStudent(id);
+        if (!s) {
+            s = createStudent(id, name);
+        }
+        char old;
+        setRecord(s, date, st[0], &old);
+    }
+    fclose(f);
+}
+
+static void attendanceCleanup(void) {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        Student *s = table[i];
+        while (s) {
+            Record *r = s->head;
+            while (r) {
+                Record *t = r;
+                r = r->next;
+                free(t);
+            }
+            Student *ts = s;
+            s = s->next;
+            free(ts);
+        }
+        table[i] = NULL;
+    }
+    while (undoTop) {
+        Action *a = undoTop;
+        undoTop = a->next;
+        free(a);
+    }
+}
+
+static void adminAttendanceMenu(void) {
+    int ch;
+    char id[ID_LEN], name[NAME_LEN], date[DATE_LEN + 5], st[16];
+
+    do {
+        printf("\n===== ATTENDANCE MODULE =====\n"
+               "1. Mark attendance\n"
+               "2. View student attendance\n"
+               "3. View attendance by date\n"
+               "4. Show defaulters\n"
+               "5. Undo last entry\n"
+               "0. Back\n");
+        ch = readInt("Choice: ");
+
+        if (ch == 1) {
+            readLine("Enter student id: ", id, sizeof(id));
+            readLine("Enter student name: ", name, sizeof(name));
+            readLine("Enter date (YYYY-MM-DD): ", date, sizeof(date));
+            readLine("Enter status (Present/Absent): ", st, sizeof(st));
+            if (markAttendance(id, name, date, normalizeStatus(st))) {
+                attendanceSave();
+                printf("Attendance marked successfully!\n");
+            } else {
+                printf("Invalid input (check id, date or status)!\n");
+            }
+        }
+        else if (ch == 2) {
+            readLine("Enter student id: ", id, sizeof(id));
+            if (!viewStudent(id)) {
+                printf("No attendance record found!\n");
+            }
+        }
+        else if (ch == 3) {
+            readLine("Enter date (YYYY-MM-DD): ", date, sizeof(date));
+            if (isValidDate(date)) {
+                viewByDate(date);
+            } else {
+                printf("Invalid date!\n");
+            }
+        }
+        else if (ch == 4) {
+            showDefaulters(readInt("Enter minimum percentage (e.g. 75): "));
+        }
+        else if (ch == 5) {
+            if (undoLast()) {
+                attendanceSave();
+                printf("Last entry undone.\n");
+            } else {
+                printf("Nothing to undo.\n");
+            }
+        }
+    } while (ch != 0);
+}
+
+static void studentViewAttendance(void) {
+    char id[ID_LEN];
+    readLine("Enter Student ID: ", id, sizeof(id));
+    if (!viewStudent(id)) {
+        printf("No attendance record found for this ID!\n");
+    }
+}
+
+#endif
