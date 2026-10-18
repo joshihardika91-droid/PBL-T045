@@ -262,3 +262,42 @@ static void viewByDate(const char *date) {
         printf("No records for this date.\n");
     }
 }
+
+static int cmpEntry(const void *a, const void *b) {
+    double x = ((const Entry *)a)->per;
+    double y = ((const Entry *)b)->per;
+    return (x > y) - (x < y);
+}
+
+static void showDefaulters(double threshold) {
+    int cap = 16, n = 0;
+    Entry *arr = (Entry *)malloc(cap * sizeof(Entry));
+
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        for (Student *s = table[i]; s; s = s->next) {
+            double p = percentage(s);
+            if (p < threshold) {
+                if (n == cap) {
+                    cap *= 2;
+                    arr = (Entry *)realloc(arr, cap * sizeof(Entry));
+                }
+                arr[n].s = s;
+                arr[n].per = p;
+                n++;
+            }
+        }
+    }
+
+    if (n == 0) {
+        printf("No defaulters.\n");
+        free(arr);
+        return;
+    }
+
+    qsort(arr, n, sizeof(Entry), cmpEntry);
+    printf("\nStudents below %.1f%%\n", threshold);
+    for (int i = 0; i < n; i++) {
+        printf("%-10s %-20s %.2f%%\n", arr[i].s->id, arr[i].s->name, arr[i].per);
+    }
+    free(arr);
+}
