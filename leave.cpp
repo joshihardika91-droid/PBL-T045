@@ -199,3 +199,14 @@ void LeaveManager::processNextLeave() {
         cout << "Leave is still pending." << endl;
     }
 }
+
+
+void LeaveManager::viewAllLeaves() {
+    if (allLeaves.empty()) {
+        cout << "No leave records." << endl;
+        return;
+    }
+    for (int i = 0; i < allLeaves.size(); i++) {
+        allLeaves[i].display();
+    }
+}
