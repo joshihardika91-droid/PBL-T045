@@ -41,11 +41,11 @@ int  User::userCount=0;
 
             cout << "Enter role (admin/warden/student): " << endl;
             cin >> newUser.Role;
-            if(newUser.Role != "admin" &&
-   newUser.Role != "warden" &&
-   newUser.Role != "student")
+
+            
+            if(newUser.Role != "student")
 {
-    cout << "Invalid role!" << endl;
+    cout << "Only student registration is allowed!" << endl;
     return;
 }
             User *temp = new User[userCount + 1];

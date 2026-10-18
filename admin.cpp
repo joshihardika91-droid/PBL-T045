@@ -4,7 +4,8 @@
 #include"admin.h"
 #include"User.h"
 using namespace std;
-
+#include "complaint.h"
+ComplaintManagement complaintSystem;
 
      int Admin:: login()
         {
@@ -18,9 +19,11 @@ using namespace std;
 
         if(user==admin_user && password==admin_pass)
         return 1;
-        else
+       else
         return 0;
         }
+
+        
         int Admin::  Authorise(){
             string checkname,checkpass;
             cout<<"Enter User name for verification";
@@ -89,62 +92,68 @@ public:
 
 
 
-void adminMenu(){
+void Admin::adminMenu(){
+
     int choice;
-    do{
-        cout<<"\n-------ADMIN MENU-------"<<endl;
-        cout<<"1. Manage Attendance"<<endl;
-        cout<<"2. Manage Mess Menu"<<endl;
-        cout<<"3. Approve Leave"<<endl;
-        cout<<"4. View Complaints"<<endl;
-        cout<<"5. Logout"<<endl;
+    Attendance at;
 
-        cout<<"Enter choice: ";
-        cin>>choice;
+    do
+    {
+        cout << "\n-------ADMIN MENU-------" << endl;
+        cout << "1. Manage Attendance" << endl;
+        cout << "2. Manage Mess Menu" << endl;
+        cout << "3. Approve Leave" << endl;
+        cout << "4. View Complaints" << endl;
+        cout << "5. Logout" << endl;
 
-        switch(choice){
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
             case 1:
-                cout<<"Attendance Management"<<endl;
+                at.Attendancemark();
                 break;
+
             case 2:
-                cout<<"Mess Menu Management"<< endl;
+                cout << "Mess Menu Management" << endl;
                 break;
+
             case 3:
-                cout<<"Leave Approval"<<endl;
+                cout << "Leave Approval" << endl;
                 break;
+
             case 4:
-                cout<<"Complaint Management"<<endl;
-                break;
+                cout << "\n--- VIEW COMPLAINTS ---" << endl;
+                complaintSystem.view_Complaints();
+               break;
+
             case 5:
-                cout<<"Logged Out Successfully!!"<<endl;
+                cout << "Logged Out Successfully!" << endl;
                 break;
+
             default:
-                cout<<"Invalid Choice!!"<<endl;
+                cout << "Invalid Choice!" << endl;
         }
 
-    } while(choice != 5);
+    } while (choice != 5);
 }
-
 int main()
 {
     Admin admin;
 
-         if(admin.login()==1)
+    if (admin.login() == 1)
     {
         cout << "Login Successful!" << endl;
-
-        Attendance at;
-        at.Attendancemark();
+       admin.adminMenu();
     }
     else
     {
         cout << "Invalid Credentials!" << endl;
     }
 
-
     return 0;
 }
-
 
 
 
