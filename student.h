@@ -9,6 +9,8 @@ private:
     int StudentId;
     string Course;
     string RoomNo;
+    ComplaintManagement complaintSystem;
+
 
 public:
     

@@ -8,6 +8,14 @@
 #include "complaint.h"
 #include"fee.h"
 
+using namespace std;
+class Student:public User
+{   private:
+    string StudentId;
+    string Name;
+    string Course;
+    string RoomNo;
+    ComplaintManagement complaintSystem;
 
     void Student::StudentMenu()
     {
