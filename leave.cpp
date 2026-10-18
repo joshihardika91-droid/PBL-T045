@@ -166,3 +166,36 @@ void LeaveManager::viewPendingLeaves() {
         temp.pop();
     }
 }
+
+
+void LeaveManager::processNextLeave() {
+    if (pending.empty()) {
+        cout << "No pending leaves." << endl;
+        return;
+    }
+
+    int id = -pending.top().second;
+    allLeaves[id - 1].display();
+
+    int choice;
+    cout << "1. Approve" << endl;
+    cout << "2. Reject" << endl;
+    cout << "3. Skip" << endl;
+    cout << "Enter choice: ";
+    cin >> choice;
+    cin.ignore();
+
+    if (choice == 1) {
+        allLeaves[id - 1].setStatus("Approved");
+        pending.pop();
+        saveData();
+        cout << "Leave approved." << endl;
+    } else if (choice == 2) {
+        allLeaves[id - 1].setStatus("Rejected");
+        pending.pop();
+        saveData();
+        cout << "Leave rejected." << endl;
+    } else {
+        cout << "Leave is still pending." << endl;
+    }
+}
