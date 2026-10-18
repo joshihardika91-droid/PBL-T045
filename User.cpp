@@ -1,19 +1,13 @@
-#include<iostream>
-#include<string>
+#include <iostream>
+#include <string>
+#include "User.h"
 using namespace std;
+User* User::users=nullptr;
+int  User::userCount=0;
 
-class User
-{
-    private:
-     string StudentId;
-     string Name;
-     string Password;
-     string Role;
 
-     User  *users;
-     int userCount = 0;
-    public:
-        void Register()
+    
+        void User::Register()
         {
             string id;
             cout << "Enter student id: " << endl;
@@ -22,7 +16,7 @@ class User
             int exists = 0;
             for(int i = 0; i < userCount; i++)
             {
-                if(users[i].StudentId == id)
+                if(users[i].UserId == id)
                 {
                     exists = 1;
                     break;
@@ -34,18 +28,18 @@ class User
             }
         else
         {
-            users[userCount].StudentId = id;
+            users[userCount].UserId = id;
             
             cout << "Enter name: " << endl;
             cin.ignore();
             getline(cin>>ws, users[userCount].Name);
             
-            users[userCount].StudentId = id;
+            users[userCount].UserId = id;
 
             cout << "Enter password: " << endl;
             cin >> users[userCount].Password;
 
-            cout << "Enter role (admin/student): " << endl;
+            cout << "Enter role (admin/warden/student): " << endl;
             cin >> users[userCount].Role;
 
         cout << "Registration successful!" << endl;
@@ -53,19 +47,22 @@ class User
     }
 }
 
- void ChangePassword()
+ void User::ChangePassword()
     {
-        string oldpass,newpass;
-        cout<<"Enter old Password"<<endl;
-        cin>>oldpass;
-
-        if(oldpass == Password)
-        {
+        string id,oldpass,newpass;
+        cout<<"Enter ID"<<endl;
+        cin>>id;
+        for(int i=0;i<userCount;i++){
+        if(users[i].UserId==id)
+        {  
+             cout<<"Enter Old Password"<<endl;
+            cin>>oldpass;
+            if(oldpass==users[i].Password){
             cout<<"Enter New Password"<<endl;
             cin>>newpass;
 
-            Password=newpass;
-            cout<<"Password is successfully updated!"<<endl;
+            users[i].Password=newpass;
+            cout<<"Password is successfully updated!"<<endl;}
         
 
         }
@@ -73,7 +70,32 @@ class User
         {
             cout<<"Wrong old Password"<<endl;
         }
+        return;
     }
+   cout<<"User ID could not be found";
+}
 
-};
+   string User::Login()
+    {
+        string id, pass;
+
+        cout << "Enter user ID: " << endl;
+        cin >> id;
+
+        cout << "Enter password: " << endl;
+        cin >> pass;
+
+        for(int i = 0; i < userCount; i++)
+        {
+            if(users[i].UserId == id &&
+               users[i].Password == pass)
+            {
+                cout << "Login successful!" << endl;
+                return users[i].Role;
+            }
+        }
+
+        cout << "Invalid credentials!" << endl;
+        return "";
+    }
     

@@ -98,7 +98,7 @@ class Student:public User
         if (attendanceTable.find(studentId) == attendanceTable.end())
 {
         cout << "Student is not registered!" << endl;
-        return;
+        return;}}
    
 
    class Attendance
@@ -125,28 +125,7 @@ public:
     
 };
 
-int main()
-{
-    Admin admin;
 
-         if(admin.login()==1)
-    {
-        cout << "Login Successful!" << endl;
-
-        Attendance at;
-        at.Attendancemark();
-    }
-    else
-    {
-        cout << "Invalid Credentials!" << endl;
-    }
-
-
-    return 0;
-
-}
-cout << "Student is Registered!" << endl;
-cout << "Attendance: " << attendanceTable[studentId] << endl;
 
 
 class StudentProfile
@@ -313,8 +292,9 @@ int main()
     }
 
 
-    return 0;
-}
+    
+
 cout << "Student is Registered!" << endl;
 cout << "Attendance: " << attendanceTable[studentId] << endl;
+return 0;
    }
