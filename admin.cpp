@@ -1,19 +1,12 @@
 #include<iostream>
 #include<unordered_map>
 #include<string>
+#include"admin.h"
+#include"User.h"
 using namespace std;
 
-class Admin
-{
-    private:
-            string password;
-            string user;
 
-            const string admin_user= "ADMIN";
-            const string admin_pass= "Hosttel@123";
-            
-    public:
-          int login()
+     int Admin:: login()
         {
         cout<<"------HOSTEL MANAGEMENT SYSTEM------"<<endl;
         cout<<"Admin login:"<<endl;
@@ -28,7 +21,7 @@ class Admin
         else
         return 0;
         }
-        int Authorise(){
+        int Admin::  Authorise(){
             string checkname,checkpass;
             cout<<"Enter User name for verification";
             cin>>checkname;
@@ -42,7 +35,7 @@ class Admin
 
         }
 
-    void ChangePassword()
+    void Admin :: ChangePassword()
     {
         string oldpass,newpass;
         cout<<"Enter old Password"<<endl;
@@ -66,7 +59,6 @@ class Admin
 
  
 
-};
 
 unordered_map<string, string>attendanceTable;
 class Attendance
@@ -95,42 +87,6 @@ public:
 };
 
 
-void studentMenu()
-{
-    int choice;
-    do{
-        cout<<"\n-------STUDENT MENU-------"<<endl;
-        cout<<"1. View Attendance"<<endl;
-        cout<<"2. View Mess Menu"<<endl;
-        cout<<"3. Apply for Leave"<<endl;
-        cout<<"4. Register Complaint"<<endl;
-        cout<<"5. Logout"<<endl;
-
-        cout<<"Enter choice: ";
-        cin>>choice;
-
-        switch(choice)
-        {
-            case 1:
-                cout<<"Attendance Section"<<endl;
-                break;
-            case 2:
-                cout<<"Mess Menu Section"<<endl;
-                break;
-            case 3:
-                cout<<"Leave Application Section"<<endl;
-                break;
-            case 4:
-                cout<<"Complaint Section"<< endl;
-                break;
-            case 5:
-                cout<<"Logged Out Successfully!"<< endl;
-                break;
-            default:
-                cout<<"Invalid Choice!!"<< endl;
-        }
-    }while(choice!= 5);
-}
 
 
 void adminMenu(){

@@ -7,11 +7,21 @@ using namespace std;
 
 class User
 {
-protected:
-    string Password;
+ private:
+     string UserId;
+     string Name;
+     string Password;
+     string Role;
+     string Status;
 
-public:
+     static User  *users;
+     static int userCount ;
+ public:
+    void Register();
+    string Login();
     void ChangePassword();
+    void ViewPendingUsers();
+    void UpdateStatus();
 };
 
 #endif
