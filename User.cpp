@@ -27,20 +27,38 @@ int  User::userCount=0;
                 cout << "This Id is already registered!" << endl;
             }
         else
-        {
-            users[userCount].UserId = id;
+        {    User newUser;
+            newUser.UserId = id;
             
             cout << "Enter name: " << endl;
-            cin.ignore();
-            getline(cin>>ws, users[userCount].Name);
             
-            users[userCount].UserId = id;
+            getline(cin>>ws, newUser.Name);
+            
+        
 
             cout << "Enter password: " << endl;
-            cin >> users[userCount].Password;
+            cin >> newUser.Password;
 
             cout << "Enter role (admin/warden/student): " << endl;
-            cin >> users[userCount].Role;
+            cin >> newUser.Role;
+            if(newUser.Role != "admin" &&
+   newUser.Role != "warden" &&
+   newUser.Role != "student")
+{
+    cout << "Invalid role!" << endl;
+    return;
+}
+            User *temp = new User[userCount + 1];
+
+    for(int i = 0; i < userCount; i++)
+    {
+        temp[i] = users[i];
+    }
+
+    temp[userCount] = newUser;
+
+    delete[] users;
+    users = temp;
 
         cout << "Registration successful!" << endl;
         userCount++;
@@ -65,15 +83,15 @@ int  User::userCount=0;
             cout<<"Password is successfully updated!"<<endl;}
         
 
-        }
+        
         else
         {
             cout<<"Wrong old Password"<<endl;
         }
-        return;
-    }
-   cout<<"User ID could not be found";
-}
+        return;}}
+    
+   cout<<"User ID could not be found";}
+
 
    string User::Login()
     {

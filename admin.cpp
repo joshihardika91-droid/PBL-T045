@@ -1,18 +1,11 @@
 #include<iostream>
 #include<unordered_map>
 #include<string>
+#include"admin.h"
+#include"User.h"
 using namespace std;
 
-class Admin
-{
-    private:
-            string password;
-            string user;
 
-            const string admin_user= "ADMIN";
-            const string admin_pass= "Hosttel@123";
-            
-    public:
           int login()
         {
         cout<<"------HOSTEL MANAGEMENT SYSTEM------"<<endl;
