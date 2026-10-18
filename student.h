@@ -7,16 +7,22 @@ class Student:public User
 {   private:
     string StudentId;
     string Name;
+class Student : public User
+{
+private:
+    int StudentId;
     string Course;
     string RoomNo;
     ComplaintManagement complaintSystem;
 
 public:
-    void Register();
-    int Login();
+    
     void ViewProfile();
-    void SubmitComplaint();
-    void menu();
+    void ComplaintMenu();
+    void Feemenu();
+    void LeaveMenu();
+    void AttendanceMenu();
+    void StudentMenu();
     int getStudentID(){return StudentId;}
      void feemanagement();
      void makepayement();

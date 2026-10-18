@@ -6,22 +6,31 @@
  #include<fstream>
 #include<sstream>
 #include "complaint.h"
+#include"fee.h"
 
 using namespace std;
 
     void Student:: menu()
+class Student:public User
+{   private:
+    string StudentId;
+    string Name;
+    string Course;
+    string RoomNo;
+    ComplaintManagement complaintSystem;
+
+    void Student::StudentMenu()
     {
         int choice;
         do{
             cout<<"\n--------STUDENT DASHBOARD--------"<<endl;
             cout<<"1.View profile"<<endl;
-            cout<<"2.View Attendence"<<endl;
-            cout<<"3.Apply for Leave"<<endl;
-            cout<<"4.View Mess Schedule"<<endl;
-            cout<<"5.Submit Complaint"<<endl;
-            cout<<"6.View Fee Status"<<endl;
-            cout<<"7.Change Password"<<endl;
-            cout<<"8.Logout"<<endl;
+            cout<<"2.Attendance Menu"<<endl;
+            cout<<"3.Fee Menu"<<endl;
+            cout<<"4.Complaint Menu"<<endl;
+            cout<<"5.Leave"<<endl;
+            
+            cout<<"6.Logout"<<endl;
 
             cout<<"Enter your choice"<<endl;
             cin>>choice;
@@ -30,24 +39,26 @@ using namespace std;
             {
 
                 case 1:  cout << "Displaying Profile" << endl;
+                           ViewProfile();
                        break;
-                case 2:  cout << "Displaying Attendance" << endl;
-                       break;
-                case 3: cout << "Leave Application" << endl;
+                case 2:  cout << "Attendance Menu" << endl;
+                          AttendanceMenu();
+                          break;
+                case 3: cout << "Fee Menu " << endl;
+                          Feemenu();
                         break;
-                case 4: cout << "Displaying Mess Schedule" << endl;
+                case 4: cout << "Complaint Menu" << endl;
+                          ComplaintMenu();
                         break;
-                case 5:SubmitComplaint();
-                break;
-                case 6:cout << "Displaying Fee Status" << endl;
-                       break;
-                case 7: ChangePassword(); //inherited from user class
+                case 5:cout <<"Leave Menu"<<endl;
+                         LeaveMenu();
                         break;
-                case 8: cout << "Logging out" << endl;
+               
+                case 6: cout << "Logging out" << endl;
                         break;
                 default: cout << "Invalid choice!" << endl;
             }
-            }while(choice!=8);
+            }while(choice!=6);
         }
 
         void Student::SubmitComplaint()
@@ -84,11 +95,11 @@ using namespace std;
         string StudentId;
         cout << "Enter Student ID: ";
         cin >> StudentId;
+    
+    
+    void Student::Feemenu(){
         
-        if (attendanceTable.find(StudentId) == attendanceTable.end())
-     {
-        cout << "Student is not registered!" << endl;
-        return;
+      
     }
     cout << "Student is Registered!" << endl;
 cout << "Attendance: " << attendanceTable[StudentId] << endl;
@@ -117,28 +128,17 @@ cout << "Attendance: " << attendanceTable[StudentId] << endl;
 
 
    void StudentProfile::display() {
+
+
+    void Student::ViewProfile() {
         cout << "\n--------STUDENT PROFILE--------" << endl;
-        cout << "Student ID:"<<id<<endl;
-        cout << "Name:"<<name<<endl;
-        cout << "Course:"<<course<<endl;
-        cout << "Room No:"<<room<<endl;
-        cout << "Phone:"<<phone<<endl;
-        cout << "Guardian Phone no:"<<guardianphone<<endl;
-        cout << "Email:"<<email<<endl;
+        cout << "Student ID:"<<StudentId<<endl;
+        cout << "Name:"<<getName()<<endl;
+        cout << "Course:"<<Course<<endl;
+        cout << "Room No:"<<RoomNo<<endl;
+     
         cout << "--------------------------------" << endl;
     }
-};
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -156,21 +156,9 @@ cout << "Attendance: " << attendanceTable[StudentId] << endl;
     bool StudentInterface:: loadstudent(string id) {
         ifstream fin("students.txt");
 
-        string line;
 
-        while(getline(fin, line)) {
-            stringstream ss(line);
 
-            StudentProfile s;
 
-            getline(ss, s.id, '|');
-            getline(ss, s.name, '|');
-            getline(ss, s.room, '|');
-            getline(ss, s.course, '|');
-            getline(ss, s.phone, '|');
-            getline(ss, s.guardianphone, '|');
-            getline(ss, s.email, '|');
-            getline(ss, s.password, '|');
 
             if(s.id == id) {
                 currentstudent = s;
@@ -191,10 +179,8 @@ bool   StudentInterface:: login() {
         string id;
         string pass;
 
-        cout << "\n--------STUDENT LOGIN--------" << endl;
 
-        cout << "Enter Student ID: ";
-        cin >> id;
+
 
         cout << "Enter Password: ";
         cin >> pass;
@@ -260,5 +246,3 @@ int main()
         cout << "Login failed. Exiting..." << endl;
     }
 
-    return 0;
-}

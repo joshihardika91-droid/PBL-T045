@@ -138,22 +138,8 @@ void Admin::adminMenu(){
 
     } while (choice != 5);
 }
-int main()
-{
-    Admin admin;
 
-    if (admin.login() == 1)
-    {
-        cout << "Login Successful!" << endl;
-       admin.adminMenu();
-    }
-    else
-    {
-        cout << "Invalid Credentials!" << endl;
-    }
 
-    return 0;
-}
 
 
 

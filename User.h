@@ -22,6 +22,8 @@ class User
     void ChangePassword();
     void ViewPendingUsers();
     void UpdateStatus();
+    string getName(){return Name;}
+    friend class FeeManager;
 };
 
 #endif
