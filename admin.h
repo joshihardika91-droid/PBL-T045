@@ -19,5 +19,5 @@ class Admin : public User
 
         
         };
-    public :int login();};
+
 #endif 

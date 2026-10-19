@@ -39,7 +39,7 @@ using namespace std;
                           Feemenu();
                         break;
                 case 4: cout << "Complaint Menu" << endl;
-                          StudentComplaintMenu();
+                          complaintSystem.StudentComplaintMenu();
                         break;
                 case 5:cout <<"Leave Menu"<<endl;
                          LeaveMenu();

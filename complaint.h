@@ -16,6 +16,7 @@ public:
     void submit_Complaint();
     void display_Complaint();
     void resolve_Complaint();
+
 };
 
 class ComplaintManagement
@@ -32,8 +33,8 @@ public:
     void submit();
     void view_Complaints();
     void resolve();
-};
-void StudentComplaintMenu();
+    void StudentComplaintMenu();
 void AdminComplaintMenu();
 
+};
 #endif

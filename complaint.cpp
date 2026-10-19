@@ -72,7 +72,7 @@ void ComplaintManagement::resolve()
 
 ComplaintManagement complaintSystem;
 
-void StudentComplaintMenu()
+void ComplaintManagement:: StudentComplaintMenu()
 {
     int choice;
 
@@ -102,7 +102,7 @@ void StudentComplaintMenu()
 }
 
 
-void AdminComplaintMenu()
+void ComplaintManagement:: AdminComplaintMenu()
 {
     int choice;
 

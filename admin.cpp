@@ -126,7 +126,7 @@ void Admin::adminMenu(){
 
             case 4:
                 cout << "\nAdmin Complaint menu" << endl;
-               AdminComplaintMenu();
+               complaintSystem.AdminComplaintMenu();
                break;
 
             case 5:
