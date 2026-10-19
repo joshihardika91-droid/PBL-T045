@@ -6,7 +6,9 @@
 #include"attendance.h"
 using namespace std;
 #include "complaint.h"
+#include "leave.h"
 ComplaintManagement complaintSystem;
+LeaveManager leaveManager;
 
      int Admin:: login()
         {
@@ -95,7 +97,8 @@ void Admin::adminMenu(){
                 break;
 
             case 3:
-                cout << "Leave Approval" << endl;
+                cout << "\nAdmin Leave menu" << endl;
+                leaveManager.adminMenu();
                 break;
 
             case 4:
