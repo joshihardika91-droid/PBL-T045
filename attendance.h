@@ -45,6 +45,6 @@ void attendanceLoad(void);
 void attendanceSave(void);
 void attendanceCleanup(void);
 void adminAttendanceMenu(void);
-void StudentViewAttendance(void);
+void studentViewAttendance(void);
 
 #endif
