@@ -67,3 +67,71 @@ void ComplaintManagement::resolve()
         front = rear = -1;
     
 }
+
+
+
+ComplaintManagement complaintSystem;
+
+void StudentComplaintMenu()
+{
+    int choice;
+
+    do
+    {
+        cout << "\n----- STUDENT COMPLAINT MENU -----" << endl;
+        cout << "1. Submit Complaint" << endl;
+        cout << "2. Back" << endl;
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:
+                complaintSystem.submit();
+                break;
+
+            case 2:
+                cout << "Returning to Student Menu..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice!" << endl;
+        }
+
+    } while (choice != 2);
+}
+
+
+void AdminComplaintMenu()
+{
+    int choice;
+
+    do
+    {
+        cout << "\n----- ADMIN COMPLAINT MENU -----" << endl;
+        cout << "1. View Complaints" << endl;
+        cout << "2. Resolve Complaint" << endl;
+        cout << "3. Back" << endl;
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:
+                complaintSystem.view_Complaints();
+                break;
+
+            case 2:
+                complaintSystem.resolve();
+                break;
+
+            case 3:
+                cout << "Returning to Admin Menu..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice!" << endl;
+        }
+
+    } while (choice != 3);
+}

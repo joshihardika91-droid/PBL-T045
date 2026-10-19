@@ -104,7 +104,7 @@ void Admin::adminMenu(){
         cout << "1. Manage Attendance" << endl;
         cout << "2. Manage Mess Menu" << endl;
         cout << "3. Approve Leave" << endl;
-        cout << "4. View Complaints" << endl;
+        cout << "4. View Complaint Menu" << endl;
         cout << "5. Logout" << endl;
 
         cout << "Enter choice: ";
@@ -125,8 +125,8 @@ void Admin::adminMenu(){
                 break;
 
             case 4:
-                cout << "\n--- VIEW COMPLAINTS ---" << endl;
-                complaintSystem.view_Complaints();
+                cout << "\nAdmin Complaint menu" << endl;
+               AdminComplaintMenu();
                break;
 
             case 5:

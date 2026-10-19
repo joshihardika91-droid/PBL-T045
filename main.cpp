@@ -1,7 +1,8 @@
-
 #include <iostream>
+#include <string>
 #include "User.h"
 #include "admin.h"
+#include "student.h"
 
 using namespace std;
 
@@ -17,7 +18,8 @@ int main()
     }
     else if (role == "student")
     {
-        cout << "Student menu is not connected yet." << endl;
+        Student student;
+        student.StudentMenu();
     }
     else if (role == "warden")
     {

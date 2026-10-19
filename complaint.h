@@ -33,4 +33,7 @@ public:
     void view_Complaints();
     void resolve();
 };
+void StudentComplaintMenu();
+void AdminComplaintMenu();
+
 #endif
