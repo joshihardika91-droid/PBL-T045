@@ -3,6 +3,7 @@
 #include<string>
 #include"admin.h"
 #include"User.h"
+#include"attendance.h"
 using namespace std;
 #include "complaint.h"
 ComplaintManagement complaintSystem;
