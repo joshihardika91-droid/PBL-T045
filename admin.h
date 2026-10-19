@@ -18,6 +18,11 @@ class Admin : public User
 
 
         
+<<<<<<< Updated upstream
         };
 
+=======
+        
+    public :int login();};
+>>>>>>> Stashed changes
 #endif 

@@ -2,6 +2,7 @@
 #define STUDENT_H
 
 #include "User.h"
+#include"complaint.h"
 #define MAX 100
 class Student : public User
 {
@@ -15,7 +16,6 @@ private:
 public:
     
     void ViewProfile();
-    void ComplaintMenu();
     void Feemenu();
     void LeaveMenu();
     void AttendanceMenu();

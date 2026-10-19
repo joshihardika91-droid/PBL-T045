@@ -64,31 +64,6 @@ ComplaintManagement complaintSystem;
  
 
 
-unordered_map<string, string>attendanceTable;
-class Attendance
-{
-private:
-    string StudentId;
-    string Name;
-    string Date;
-    string Status;
-public:
-    void Attendancemark()
-    {
-        cout << "Enter student id: " << endl;
-        cin >> StudentId;
-        cout << "Enter student name: " << endl;
-        cin.ignore();
-        getline(cin,Name);
-        cout << "Enter present date: " << endl;
-        cin >> Date;
-        cout << "Enter status (Present/Absent): " << endl;
-        cin >> Status;
-        attendanceTable[StudentId] = Status;
-        cout << "Attendance marked successfully! " << endl;
-    }
-    
-};
 
 
 
@@ -96,7 +71,6 @@ public:
 void Admin::adminMenu(){
 
     int choice;
-    Attendance at;
 
     do
     {
@@ -104,7 +78,7 @@ void Admin::adminMenu(){
         cout << "1. Manage Attendance" << endl;
         cout << "2. Manage Mess Menu" << endl;
         cout << "3. Approve Leave" << endl;
-        cout << "4. View Complaint Menu" << endl;
+        cout << "4. View Complaints" << endl;
         cout << "5. Logout" << endl;
 
         cout << "Enter choice: ";
@@ -113,7 +87,7 @@ void Admin::adminMenu(){
         switch (choice)
         {
             case 1:
-                at.Attendancemark();
+                
                 break;
 
             case 2:
@@ -125,8 +99,8 @@ void Admin::adminMenu(){
                 break;
 
             case 4:
-                cout << "\nAdmin Complaint menu" << endl;
-               complaintSystem.AdminComplaintMenu();
+                cout << "\n--- VIEW COMPLAINTS ---" << endl;
+                complaintSystem.AdminComplaintMenu();
                break;
 
             case 5:

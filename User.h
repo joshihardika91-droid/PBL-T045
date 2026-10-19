@@ -23,7 +23,9 @@ class User
     void ViewPendingUsers();
     void UpdateStatus();
     string getName(){return Name;}
-    friend class FeeManager;
+    string getUserId(){return UserId;}
+    string getRole(){return Role;}
+    string getStatus(){return Status;}
 };
 
 #endif
