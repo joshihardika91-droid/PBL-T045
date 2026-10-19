@@ -3,6 +3,22 @@
 
 using namespace std;
 
+static Student *table[TABLE_SIZE] = {NULL};
+static Action *undoTop = NULL;
+
+static unsigned hashld(const char *s)
+{
+    unsigned long h = 5381;
+    int c;
+
+    while ((c = (unsigned char)*s++))
+    {
+        h = ((h << 5) + h) + c;
+    }
+
+    return (unsigned)(h % TABLE_SIZE);
+}
+
 static Student *findStudentLocal(const char *id)
 {
     for (Student *s = table[hashld(id)]; s; s = s->next)
