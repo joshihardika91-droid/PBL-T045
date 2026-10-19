@@ -9,6 +9,8 @@
 #include"fee.h"
 
 using namespace std;
+
+    void Student:: menu()
 class Student:public User
 {   private:
     string StudentId;
@@ -59,12 +61,73 @@ class Student:public User
             }while(choice!=6);
         }
 
+        void Student::SubmitComplaint()
+  {
+    cout << "\n-------- COMPLAINT SECTION --------" << endl;
+    complaintSystem.submit();
+   }
+    
+    void Student::feemanagement(){
+        int ch,i;
+        Fee fees[MAX];
+        cout<<"\n---------FEE PORTAL----------"<<endl;
+        cout<<"1.Make payment"<<endl;
+        cout<<"2.Check Dues"<<endl;
+        cout<<"3.Generate Invoice"<<endl;
+        cout<<"Choose the options "<<endl;
+        cin>>ch;
+        switch(ch){
+        case 1:fees[i].makepayment();
+               break;
+        case 2:fees[i].checkdues();
+                break;
+        
+        }
+    }
+   void Student::makepayement(){
+        float amount;
+        
+   }
+
+   extern unordered_map<string, string> attendanceTable;
+   void ViewAttendance()
+   {
+        string StudentId;
+        cout << "Enter Student ID: ";
+        cin >> StudentId;
     
     
     void Student::Feemenu(){
         
       
     }
+    cout << "Student is Registered!" << endl;
+cout << "Attendance: " << attendanceTable[StudentId] << endl;
+   }
+
+   
+
+ void Attendance:: Attendancemark()
+    {
+        cout << "Enter student id: " << endl;
+        cin >> StudentId;
+        cout << "Enter student name: " << endl;
+        cin.ignore();
+        getline(cin,Name);
+        cout << "Enter present date: " << endl;
+        cin >> Date;
+        cout << "Enter status (Present/Absent): " << endl;
+        cin >> Status;
+        cout << "Attendance marked successfully! " << endl;
+    }
+    
+};
+
+
+
+
+
+   void StudentProfile::display() {
 
 
     void Student::ViewProfile() {
@@ -90,13 +153,96 @@ class Student:public User
 
 
 
+    bool StudentInterface:: loadstudent(string id) {
+        ifstream fin("students.txt");
 
 
 
 
 
+            if(s.id == id) {
+                currentstudent = s;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
+    StudentInterface:: StudentInterface() {
+        loggedin = false;
+    }
+
+bool   StudentInterface:: login() {
+        string id;
+        string pass;
 
 
 
 
+        cout << "Enter Password: ";
+        cin >> pass;
+
+        if(loadstudent(id) && currentstudent.password == pass) {
+            loggedin = true;
+
+            cout << "Login successful! Welcome "
+                 << currentstudent.name << endl;
+
+            return true;
+        }
+
+        cout << "Invalid ID or Password!" << endl;
+
+        return false;
+    }
+    void  StudentInterface::  viewProfile(){
+        if(!loggedin){
+            cout << "Please login first!"<<endl;
+            return;}
+        currentstudent.display();}
+
+    void   StudentInterface:: logout(){
+        char confirm;
+        cout<<"Are you sure you want to logout?(yes/no):";
+        cin>>confirm;
+        if(confirm=='y'||confirm=='Y'){
+            ofstream fout("logout_log.txt",ios::app);
+
+            fout<<currentstudent.id<<"logged out"<<endl;
+            fout.close();
+
+            cout<<"Goodbye"<<currentstudent.name<<"!You have been logged out."<<endl;
+            currentstudent=StudentProfile();
+            loggedin=false;}
+            else {
+            cout<<"Logout cancelled."<<endl;}
+    }
+    
+
+    bool   StudentInterface:: isLoggedIn(){
+        return loggedin;
+    }
+
+    string  StudentInterface::  getCurrentId() {
+        return currentstudent.id;}
+
+
+
+
+int main()
+{
+    StudentInterface studentLogin;
+
+    if (studentLogin.login())
+    {
+        Student student;
+        student.menu();
+    }
+    else
+    {
+        cout << "Login failed. Exiting..." << endl;
+    }
 
