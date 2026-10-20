@@ -35,7 +35,7 @@ using namespace std;
                            ViewProfile();
                        break;
                 case 2:  cout << "Attendance Menu" << endl;
-                          AttendanceMenu();
+                          studentViewAttendance();
                           break;
                 case 3: cout << "Fee Menu " << endl;
                           Feemenu();
