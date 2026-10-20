@@ -18,11 +18,14 @@ void Feehandler::sortbyduefees(int count){
                 min=j;
             }
         }
+        if(min!=i){
         temp=feerecords[i];
         feerecords[i]=feerecords[min];
-        feerecords[min]=temp;
+        feerecords[min]=temp;}
 
     }
+        createhashfunction(recordcount);
+
 }
 void Feehandler::createhashfunction(int recordcount){
     int i=0,s_id,index;
@@ -31,26 +34,30 @@ void Feehandler::createhashfunction(int recordcount){
     }
     for (i=0;i<recordcount;i++){
          s_id=feerecords[i].getStudentID();
-         index=s_id%recordcount;
+         index=s_id%MAX;
          while(hashtable[index]!=-1){
-            index=(index+1)%recordcount;
+            index=(index+1)%MAX;
          }
     hashtable[index]=i;
     }
 
 }
-int Feehandler::findrecords(){
+int Feehandler::findrecords(int id){
     int id,index,ridx;
-    cout<<"Enter student ID";
-    cin>>id;
-    index=id%recordcount;
+    if (recordcount == 0)
+    {
+        cout << "No fee records available.\n";
+        return -1;
+    }
+    
+    index=id%MAX;
     while(hashtable[index]!=-1){
         ridx=hashtable[index];
         if(feerecords[ridx].getStudentID()==id){
             return ridx;
         
         }
-        index=(index+1)%recordcount;
+        index=(index+1)%MAX;
 
     }
     
@@ -105,4 +112,17 @@ void Feehandler::displayfee()
         cout << "\nStatus: " << feerecords[i].getstatus();
         cout << "\nDate: " << feerecords[i].getdate() << '\n';
     }
+}
+
+void Feehandler::Makepayment(int id){
+   int  idx=findrecords(id);
+   if (idx==-1){
+    cout<<"No records "<<endl;
+    
+   }
+
+}
+void Feehandler::Studentfeedashboard(){
+
+
 }

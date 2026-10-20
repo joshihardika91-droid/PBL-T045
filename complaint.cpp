@@ -1,6 +1,7 @@
 #include "complaint.h"
 #include<string>
-
+#include "admin.h"
+#include"student.h"
 
 void Complaint::submit_Complaint(){
     cout << "Enter Student ID: ";
@@ -92,7 +93,7 @@ void ComplaintManagement:: StudentComplaintMenu()
 
             case 2:
                 cout << "Returning to Student Menu..." << endl;
-                break;
+                return;
 
             default:
                 cout << "Invalid choice!" << endl;
@@ -127,11 +128,13 @@ void ComplaintManagement:: AdminComplaintMenu()
 
             case 3:
                 cout << "Returning to Admin Menu..." << endl;
-                break;
+                return;
+            
 
             default:
                 cout << "Invalid choice!" << endl;
         }
 
     } while (choice != 3);
+
 }
