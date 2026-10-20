@@ -36,29 +36,16 @@ typedef struct Action
     struct Action *next;
 }Action;
 
-typedef struct{
+typedef struct Entry
+{
     Student *s;
     double per;
 }Entry;
 
-static Student *table[TABLE_SIZE];
-static Action *undoTop = NULL;
 
-static unsigned hashld(const char *s)
-{
-    unsigned long h = 5381;
-    int c;
-    while((c = (unsigned char)*s++))
-    h = ((h << 5) + h) + c;
-    return(unsigned)(h % TABLE_SIZE);
-}
-
-static Student *findStudent(const char*id)
-{
-    for(Student *s = table[hashld(id)]; s; s = s->next){
-    if(strcmp(s->id,id) == 0){}
-    return s;
-}
-    return NULL;
-}
+void attendanceSave(void);
+void attendanceLoad(void);
+void attendanceCleanup(void);
+void adminAttendanceMenu(void);
+void studentViewAttendance(void);
 #endif
