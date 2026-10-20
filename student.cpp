@@ -6,6 +6,7 @@
 #include"student.h"
  #include<fstream>
 #include<sstream>
+#include "attendance.h"
 #include "complaint.h"
 #include"fee.h"
 
