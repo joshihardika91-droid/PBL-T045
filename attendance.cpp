@@ -3,7 +3,7 @@
 
 using namespace std;
 
-static Student *table[TABLE_SIZE] = {NULL};
+static AttendanceStudent *table[TABLE_SIZE] = {NULL};
 static Action *undoTop = NULL;
 
 static unsigned hashld(const char *s)
@@ -19,9 +19,9 @@ static unsigned hashld(const char *s)
     return (unsigned)(h % TABLE_SIZE);
 }
 
-static Student *findStudentLocal(const char *id)
+static AttendanceStudent *findStudentLocal(const char *id)
 {
-    for (Student *s = table[hashld(id)]; s; s = s->next)
+    for (AttendanceStudent *s = table[hashld(id)]; s; s = s->next)
     {
         if (strcmp(s->id, id) == 0)
         {
@@ -32,9 +32,9 @@ static Student *findStudentLocal(const char *id)
     return NULL;
 }
 
-static Student *createStudent(const char *id, const char *name)
+static AttendanceStudent *createStudent(const char *id, const char *name)
 {
-    Student *s = (Student *)calloc(1, sizeof(Student));
+    AttendanceStudent *s = (AttendanceStudent *)calloc(1, sizeof(AttendanceStudent));
 
     if (s == NULL)
     {
@@ -52,7 +52,7 @@ static Student *createStudent(const char *id, const char *name)
     return s;
 }
 
-static int setRecord(Student *s, const char *date, char status, char *old)
+static int setRecord(AttendanceStudent *s, const char *date, char status, char *old)
 {
     Record *prev = NULL;
     Record *cur = s->head;
@@ -98,7 +98,7 @@ static int setRecord(Student *s, const char *date, char status, char *old)
     return 0;
 }
 
-static void removeRecord(Student *s, const char *date)
+static void removeRecord(AttendanceStudent *s, const char *date)
 {
     Record *prev = NULL;
     Record *cur = s->head;
@@ -225,7 +225,7 @@ static int markAttendance(const char *id, const char *name,
         return 0;
     }
 
-    Student *s = findStudentLocal(id);
+    AttendanceStudent *s = findStudentLocal(id);
 
     if (s == NULL)
     {
@@ -261,7 +261,7 @@ static int undoLast(void)
     Action *a = undoTop;
     undoTop = a->next;
 
-    Student *s = findStudentLocal(a->id);
+    AttendanceStudent *s = findStudentLocal(a->id);
 
     if (s != NULL)
     {
@@ -282,7 +282,7 @@ static int undoLast(void)
     return 1;
 }
 
-static double percentage(const Student *s)
+static double percentage(const AttendanceStudent *s)
 {
     int total = 0;
     int present = 0;
@@ -302,7 +302,7 @@ static double percentage(const Student *s)
 
 static int viewStudent(const char *id)
 {
-    Student *s = findStudentLocal(id);
+    AttendanceStudent *s = findStudentLocal(id);
 
     if (s == NULL)
     {
@@ -345,7 +345,7 @@ static void viewByDate(const char *date)
 
     for (int i = 0; i < TABLE_SIZE; i++)
     {
-        for (Student *s = table[i]; s; s = s->next)
+        for (AttendanceStudent *s = table[i]; s; s = s->next)
         {
             for (Record *r = s->head; r; r = r->next)
             {
@@ -391,7 +391,7 @@ static void showDefaulters(double threshold)
 
     for (int i = 0; i < TABLE_SIZE; i++)
     {
-        for (Student *s = table[i]; s; s = s->next)
+        for (AttendanceStudent *s = table[i]; s; s = s->next)
         {
             double p = percentage(s);
 
@@ -456,7 +456,7 @@ void attendanceSave(void)
 
     for (int i = 0; i < TABLE_SIZE; i++)
     {
-        for (Student *s = table[i]; s; s = s->next)
+        for (AttendanceStudent *s = table[i]; s; s = s->next)
         {
             for (Record *r = s->head; r; r = r->next)
             {
@@ -496,7 +496,7 @@ void attendanceLoad(void)
             continue;
         }
 
-        Student *s = findStudentLocal(id);
+        AttendanceStudent *s = findStudentLocal(id);
 
         if (s == NULL)
         {
@@ -520,7 +520,7 @@ void attendanceCleanup(void)
 {
     for (int i = 0; i < TABLE_SIZE; i++)
     {
-        Student *s = table[i];
+        AttendanceStudent *s = table[i];
 
         while (s != NULL)
         {
@@ -534,7 +534,7 @@ void attendanceCleanup(void)
                 free(temp);
             }
 
-            Student *tempStudent = s;
+            AttendanceStudent *tempStudent = s;
             s = s->next;
 
             free(tempStudent);
