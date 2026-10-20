@@ -89,7 +89,8 @@ void Admin::adminMenu(){
         switch (choice)
         {
             case 1:
-                
+                cout << "\n--- MANAGE ATTENDANCE ---" << endl;
+                adminAttendanceMenu();
                 break;
 
             case 2:
