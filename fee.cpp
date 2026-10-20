@@ -65,13 +65,30 @@ int Feehandler::findrecords(int id){
     return-1;
 }
 
-void Feehandler::addFeeRecord( Fee& fee)
+void Feehandler::addFeeRecord()
+
 {
     if (recordcount >= MAX)
     {
         cout << "Fee record limit reached.\n";
         return;
     }
+    Fee fee;
+    int sid;
+    float fmt;
+    string dt;
+    
+    cout<<"Enter student id"<<endl;
+    cin>>sid;
+    fee.setstudentid(sid);
+    cout<<"Enter Fee Amount "<<endl;
+    cin>>fmt;
+    fee.setfeeamount(fmt);
+    fee.setdue(fmt);
+    cout<<"Enter date"<<endl;
+    getline(cin>>ws,dt);
+    fee.setdate(dt);
+
 
     if (fee.getStudentID() <= 0 || fee.getdue() < 0 ||
         fee.getfeeamount() < 0)
@@ -118,11 +135,129 @@ void Feehandler::Makepayment(int id){
    int  idx=findrecords(id);
    if (idx==-1){
     cout<<"No records "<<endl;
-    
+
    }
+   float amount;
+
+    cout << "Outstanding fee: Rs. "
+         << feerecords[idx].getdue() << '\n';
+
+    if (feerecords[idx].getdue() <= 0)
+    {
+        cout << "All fees have been paid.\n";
+        return;
+    }
+
+    cout << "Enter payment amount: Rs. ";
+    cin >> amount;
+
+   
+
+    if (amount <= 0 ||
+        amount > feerecords[idx].getdue())
+    {
+        cout << "Invalid payment amount.\n";
+        return;
+    }
+
+    if (!feerecords[idx].addpayment(amount))
+    {
+        cout << "Payment history is full.\n";
+        return;
+    }
+
+    float remaining =
+        feerecords[idx].getdue() - amount;
+
+    feerecords[idx].setdue(remaining);
+
+    if (remaining == 0)
+        feerecords[idx].setstatus("Paid");
+    else
+        feerecords[idx].setstatus("Partial");
+
+    cout << "Payment successful!\n";
+    cout << "Remaining due: Rs. " << remaining << '\n';
+
 
 }
-void Feehandler::Studentfeedashboard(){
+void Feehandler::viewpayments(int id){
+    int  idx=findrecords(id);
+   if (idx==-1){
+    cout<<"No records "<<endl;
+
+   }
+   int c=feerecords[idx].getpaycount();
+   cout<<"\n-----------TRANSACTION HISTORY-----------\n";
+   if (c == 0)
+    {
+        cout << "No payment history available.\n";
+        return;
+    }
 
 
+    for (int i = 0; i < c; i++)
+    {
+        cout << "Payment " << i + 1 << ": Rs. "
+             << feerecords[idx].getpayment(i) << '\n';
+    }
+
+    cout << "Total paid: Rs. "
+         << feerecords[idx].getfeeamount()
+            - feerecords[idx].getdue() << '\n';
+
+    cout << "Due fees: Rs. "
+         << feerecords[idx].getdue() << '\n';
+}
+
+
+void Feehandler::Studentfeedashboard(int id){
+    int ch;
+    do{
+            cout<<"----Student Fee Portal-----"<<endl;
+            cout<<"1.Make Payment"<<endl;
+            cout<<"2.View previous payments"<<endl;
+            cout<<"3.Return to Student menu"<<endl;
+            cout<<"Enter Choice"<<endl;
+            cin>>ch;
+            switch(ch){
+                case 1:
+                       Makepayment( id);
+                        break;
+                case 2:viewpayments(id);
+                        break;
+                case 3:cout<<"Back to Main Menu";
+                       return ;
+                default:cout<<"Invalid Choice ";
+                
+            }
+    }while(ch!=3);
+
+}
+void Feehandler::AdminfeeDashboard(){
+        int ch;
+    do{
+            cout<<"----Student Fee Portal-----"<<endl;
+            cout<<"1.Sort Record by dues"<<endl;
+            cout<<"2.View all records"<<endl;
+            cout<<"3.Add Record"<<endl;
+            cout<<"4.Return to Admin menu"<<endl;
+            cout<<"Enter Choice"<<endl;
+            cin>>ch;
+            switch(ch){
+                case 1:
+                        int rcount=getrecordcount();
+                        sortbyduefees(rcount);
+                        break;
+                case 2:displayfee();
+                        break;
+                case 3:
+                        addFeeRecord();
+                         break;
+                case 4:cout<<"Back to Main Menu";
+                       return ;
+                default:cout<<"Invalid Choice";
+                
+            }
+    }while(ch!=4);
 }

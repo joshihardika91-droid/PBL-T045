@@ -19,7 +19,11 @@ int main()
     else if (role == "student")
     {
         Student student;
-        student.StudentMenu();
+        int s_id;
+        cout<<"Enter your student id";
+        cin>>s_id;
+        
+        student.StudentMenu(s_id);
     }
     else if (role == "warden")
     {

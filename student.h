@@ -3,6 +3,8 @@
 
 #include "User.h"
 #include"complaint.h"
+#include"leave.h"
+#include"fee.h"
 #define MAX 100
 class Student : public User
 {
@@ -11,15 +13,15 @@ private:
     string Course;
     string RoomNo;
     ComplaintManagement complaintSystem;
+    Feehandler feesystem;
+    LeaveManager leaveManager;
 
 
 public:
     
     void ViewProfile();
-    void Feemenu();
-    void LeaveMenu();
-    void AttendanceMenu();
-    void StudentMenu();
+   
+    void StudentMenu(int );
     int getStudentID(){return StudentId;}
 };
 

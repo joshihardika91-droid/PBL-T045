@@ -8,12 +8,14 @@
 #include<sstream>
 #include "complaint.h"
 #include"fee.h"
+ 
 
 using namespace std;
 
-    void Student::StudentMenu()
+    void Student::StudentMenu(int s_id)
     {
         int choice;
+        string Name=getName();
         do{
             cout<<"\n--------STUDENT DASHBOARD--------"<<endl;
             cout<<"1.View profile"<<endl;
@@ -34,16 +36,17 @@ using namespace std;
                            ViewProfile();
                        break;
                 case 2:  cout << "Attendance Menu" << endl;
-                          AttendanceMenu();
+                          
                           break;
                 case 3: cout << "Fee Menu " << endl;
-                          Feemenu();
+                          feesystem.Studentfeedashboard(s_id);
                         break;
                 case 4: cout << "Complaint Menu" << endl;
                           complaintSystem.StudentComplaintMenu();
                         break;
                 case 5:cout <<"Leave Menu"<<endl;
-                         LeaveMenu();
+                          
+                          leaveManager.studentMenu(to_string(s_id),Name);
                         break;
                
                 case 6: cout << "Logging out" << endl;
@@ -54,11 +57,7 @@ using namespace std;
         }
 
     
-    
-    void Student::Feemenu(){
-        
-      
-    }
+   
 
 
     void Student::ViewProfile() {

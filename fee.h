@@ -17,18 +17,30 @@ class Fee{
              Status="Pending";
              paycount=0;
              }
-            void checkdues();
-            void makepayment();
-            void generateinvoice();
+           
             int getStudentID(){return StudentID;};
             void setdue(float amount ){due=amount;};
-            void setstatus(string);
-            void setdate(string);
+            void setstatus(string s){Status=s;};
+            void setdate(string d){date=d;};
+            void setstudentid(int ID){StudentID=ID;}
+            void setfeeamount(float f){feeamount=f;}
             string getdate(){return date;}
             string getstatus(){return Status;}
             float getdue(){return due;}
             float getfeeamount(){return feeamount;}
             int getpaycount(){return paycount;};
+            int addpayment(float amt){
+               int  Paycount=getpaycount();
+                if (Paycount>100){
+                        return 0;
+                }
+                payments[Paycount]=amt;
+                Paycount++;
+                return 1;
+           }
+           float getpayment(int i){
+                return payments[i];
+           }
             
 
              
@@ -46,11 +58,11 @@ class Feehandler{
            int findrecords(int );
            void displayfee(); 
            void createhashfunction(int);
-           void addFeeRecord( Fee& fee);
-           void Studentfeedashboard();
+           void addFeeRecord();
+           void Studentfeedashboard(int id);
            void AdminfeeDashboard();
-           void generateInvoice();
            void Makepayment(int id);
            void viewpayments(int);
+         
            
 };

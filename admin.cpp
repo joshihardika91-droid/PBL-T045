@@ -7,8 +7,7 @@
 using namespace std;
 #include "complaint.h"
 #include "leave.h"
-ComplaintManagement complaintSystem;
-LeaveManager leaveManager;
+
 
      int Admin:: login()
         {
@@ -78,9 +77,9 @@ void Admin::adminMenu(){
     {
         cout << "\n-------ADMIN MENU-------" << endl;
         cout << "1. Manage Attendance" << endl;
-        cout << "2. Manage Mess Menu" << endl;
-        cout << "3. Approve Leave" << endl;
-        cout << "4. View Complaints" << endl;
+        cout << "2. Manage Fee" << endl;
+        cout << "3. Manage Leave" << endl;
+        cout << "4. Manage Complaints" << endl;
         cout << "5. Logout" << endl;
 
         cout << "Enter choice: ";
@@ -93,16 +92,16 @@ void Admin::adminMenu(){
                 break;
 
             case 2:
-                cout << "Mess Menu Management" << endl;
+                feesystem.AdminfeeDashboard();
                 break;
 
             case 3:
-                cout << "\nAdmin Leave menu" << endl;
+                
                 leaveManager.adminMenu();
                 break;
 
             case 4:
-                cout << "\n--- VIEW COMPLAINTS ---" << endl;
+                
                 complaintSystem.AdminComplaintMenu();
                break;
 

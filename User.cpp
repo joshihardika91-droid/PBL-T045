@@ -138,10 +138,4 @@ void User::ViewPendingUsers()
         cout << "No pending registrations." << endl;
     }
 }
-void User::UpdateStatus(){
-    int ch,f=0;
-    string id;
-    cout<<"Enter id ";
-    cin>>id;
-    for(int i)
-}
+

@@ -19,13 +19,13 @@ typedef struct Record
     struct Record *next;
 }Record;
  
-typedef struct Student
+typedef struct student
 {
     char id[ID_LEN];
     char name[NAME_LEN];
     Record *head;
-    struct Student *next;
-}Student;
+    struct student *next;
+}student;
 
 typedef struct Action
 {

@@ -21,7 +21,6 @@ class User
     string Login();
     void ChangePassword();
     void ViewPendingUsers();
-    void UpdateStatus();
     string getName(){return Name;}
     string getUserId(){return UserId;}
     string getRole(){return Role;}
