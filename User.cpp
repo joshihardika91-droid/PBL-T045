@@ -2,6 +2,7 @@
 #include <string>
 #include "User.h"
 using namespace std;
+
 User* User::users=nullptr;
 int  User::userCount=0;
 

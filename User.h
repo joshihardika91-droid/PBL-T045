@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#define MAX 100
 using namespace std;
 
 class User

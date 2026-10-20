@@ -1,14 +1,9 @@
 
 #include<iostream>
-#include<unordered_map>
 #include<string>
-#include "User.h"
+
 #include"student.h"
- #include<fstream>
-#include<sstream>
-#include "attendance.h"
-#include "complaint.h"
-#include"fee.h"
+
  
 
 using namespace std;

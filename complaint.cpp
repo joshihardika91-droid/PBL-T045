@@ -1,7 +1,4 @@
 #include "complaint.h"
-#include<string>
-#include "admin.h"
-#include"student.h"
 
 void Complaint::submit_Complaint(){
     cout << "Enter Student ID: ";

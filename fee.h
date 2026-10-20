@@ -1,6 +1,8 @@
-#include"student.h"
+#ifndef FEE_H
+#define FEE_H
+#include<iostream>
 #include"user.h"
-#define MAX 400
+using namespace std;
 class Fee{
     private :int StudentID;
              float feeamount;
@@ -21,7 +23,7 @@ class Fee{
             int getStudentID(){return StudentID;};
             void setdue(float amount ){due=amount;};
             void setstatus(string s){Status=s;};
-            void setdate(string d){date=d;};
+            void setdate(string d){date=d;}
             void setstudentid(int ID){StudentID=ID;}
             void setfeeamount(float f){feeamount=f;}
             string getdate(){return date;}
@@ -50,7 +52,7 @@ class Feehandler{
             int *hashtable;
             int recordcount;
             
-    public:Feehandler();
+    public:Feehandler(){};
            ~Feehandler(){delete[] feerecords;
                           delete[] hashtable;};
             int getrecordcount(){return recordcount;}
@@ -66,3 +68,4 @@ class Feehandler{
          
            
 };
+#endif

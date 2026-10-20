@@ -1,12 +1,9 @@
 #include<iostream>
-#include<unordered_map>
 #include<string>
 #include"admin.h"
-#include"User.h"
-#include"attendance.h"
+
 using namespace std;
-#include "complaint.h"
-#include "leave.h"
+
 
 
      int Admin:: login()

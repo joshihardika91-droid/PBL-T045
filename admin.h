@@ -6,6 +6,7 @@ using namespace std;
 #include "leave.h"
 #include "fee.h"
 #include "attendance.h"
+#include"user.h"
 class Admin : public User
 {
     private:
@@ -26,5 +27,5 @@ class Admin : public User
 
         
         
-    public :int login();};
+    };
 #endif 

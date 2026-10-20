@@ -1,11 +1,11 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 
-#include "User.h"
+#include"user.h"
 #include"complaint.h"
 #include"leave.h"
+
 #include"fee.h"
-#define MAX 100
 class Student : public User
 {
 private:

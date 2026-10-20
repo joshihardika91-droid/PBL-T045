@@ -1,6 +1,7 @@
-#include"student.h"
+
 #include"fee.h"
-#include"user.h"
+#include<iostream>
+using namespace std;
 
 void Feehandler::sortbyduefees(int count){
     int i=0,j=0,min;
@@ -43,7 +44,7 @@ void Feehandler::createhashfunction(int recordcount){
 
 }
 int Feehandler::findrecords(int id){
-    int id,index,ridx;
+    int index,ridx;
     if (recordcount == 0)
     {
         cout << "No fee records available.\n";
@@ -246,9 +247,9 @@ void Feehandler::AdminfeeDashboard(){
             cin>>ch;
             switch(ch){
                 case 1:
-                        int rcount=getrecordcount();
+                        {int rcount=getrecordcount();
                         sortbyduefees(rcount);
-                        break;
+                        break;}
                 case 2:displayfee();
                         break;
                 case 3:
