@@ -4,7 +4,7 @@
 #include"user.h"
 #include"complaint.h"
 #include"leave.h"
-
+#include"attendance.h"
 #include"fee.h"
 class Student : public User
 {
@@ -18,9 +18,11 @@ private:
 
 
 public:
-    
+    Student(){ StudentId = 0;
+    Course = "Not assigned";
+    RoomNo = "Not assigned";}
     void ViewProfile();
-   
+    void SetStudentDetails(int id, string name);
     void StudentMenu(int );
     int getStudentID(){return StudentId;}
 };

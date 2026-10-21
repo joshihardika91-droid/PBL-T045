@@ -22,10 +22,15 @@ class User
     string Login();
     void ChangePassword();
     void ViewPendingUsers();
+    void UpdateStatus();
+    void setName(string name){
+    Name = name;}
     string getName(){return Name;}
     string getUserId(){return UserId;}
     string getRole(){return Role;}
     string getStatus(){return Status;}
+    static void saveUsers();
+    static void loadUsers();
 };
 
 #endif

@@ -7,7 +7,11 @@
  
 
 using namespace std;
-
+void Student::SetStudentDetails(int id, string name)
+{
+    StudentId = id;
+    setName(name);
+}
     void Student::StudentMenu(int s_id)
     {
         int choice;
@@ -32,7 +36,7 @@ using namespace std;
                            ViewProfile();
                        break;
                 case 2:  cout << "Attendance Menu" << endl;
-                          
+                          studentViewAttendance();
                           break;
                 case 3: cout << "Fee Menu " << endl;
                           feesystem.Studentfeedashboard(s_id);

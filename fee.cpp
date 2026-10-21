@@ -1,121 +1,232 @@
 
-#include"fee.h"
-#include<iostream>
+#include "fee.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
 using namespace std;
 
-void Feehandler::sortbyduefees(int count){
-    int i=0,j=0,min;
-    Fee temp;
-    if (count < 0 || count > recordcount)
-    {
-        cout << "Invalid record count.\n";
-        return;
-    }
+const string FEE_FILE = "fees.txt";
 
-    for(i=0;i<recordcount-1;i++){
-        min=i;
-        for(j=i+1;j<recordcount;j++){
-            if(feerecords[j].getdue()<feerecords[min].getdue()){
-                min=j;
-            }
-        }
-        if(min!=i){
-        temp=feerecords[i];
-        feerecords[i]=feerecords[min];
-        feerecords[min]=temp;}
-
-    }
-        createhashfunction(recordcount);
-
-}
-void Feehandler::createhashfunction(int recordcount){
-    int i=0,s_id,index;
-    for(i=0;i<recordcount;i++){
-        hashtable[i]=-1;
-    }
-    for (i=0;i<recordcount;i++){
-         s_id=feerecords[i].getStudentID();
-         index=s_id%MAX;
-         while(hashtable[index]!=-1){
-            index=(index+1)%MAX;
-         }
-    hashtable[index]=i;
-    }
-
-}
-int Feehandler::findrecords(int id){
-    int index,ridx;
-    if (recordcount == 0)
-    {
-        cout << "No fee records available.\n";
-        return -1;
-    }
-    
-    index=id%MAX;
-    while(hashtable[index]!=-1){
-        ridx=hashtable[index];
-        if(feerecords[ridx].getStudentID()==id){
-            return ridx;
-        
-        }
-        index=(index+1)%MAX;
-
-    }
-    
-    cout<<"No Record found"<<endl;
-    return-1;
-}
-
-void Feehandler::addFeeRecord()
-
+// Load all saved records.
+void Feehandler::loadFromFile()
 {
-    if (recordcount >= MAX)
+    recordcount = 0;
+
+    for (int i = 0; i < MAX; i++)
+        hashtable[i] = -1;
+
+    ifstream file(FEE_FILE);
+
+    if (!file.is_open())
+        return;  // First run: file may not exist yet.
+
+    string line;
+
+    while (getline(file, line) && recordcount < MAX)
     {
-        cout << "Fee record limit reached.\n";
-        return;
+        if (line.empty())
+            continue;
+
+        stringstream ss(line);
+        string field;
+        Fee fee;
+
+        try
+        {
+            getline(ss, field, '|');
+            fee.setstudentid(stoi(field));
+
+            getline(ss, field, '|');
+            fee.setfeeamount(stof(field));
+
+            getline(ss, field, '|');
+            fee.setdate(field);
+
+            getline(ss, field, '|');
+            fee.setdue(stof(field));
+
+            getline(ss, field, '|');
+            fee.setstatus(field);
+
+            getline(ss, field, '|');
+            int count = stoi(field);
+
+            getline(ss, field, '|');
+            stringstream paymentStream(field);
+            string payment;
+
+            for (int i = 0; i < count && i < 100; i++)
+            {
+                if (getline(paymentStream, payment, ','))
+                    fee.loadpayment(stof(payment));
+            }
+
+            if (fee.getStudentID() > 0)
+                feerecords[recordcount++] = fee;
+        }
+        catch (...)
+        {
+            cout << "Skipping invalid fee record in file.\n";
+        }
     }
-    Fee fee;
-    int sid;
-    float fmt;
-    string dt;
-    
-    cout<<"Enter student id"<<endl;
-    cin>>sid;
-    fee.setstudentid(sid);
-    cout<<"Enter Fee Amount "<<endl;
-    cin>>fmt;
-    fee.setfeeamount(fmt);
-    fee.setdue(fmt);
-    cout<<"Enter date"<<endl;
-    getline(cin>>ws,dt);
-    fee.setdate(dt);
 
+    file.close();
+    createhashfunction(recordcount);
+}
 
-    if (fee.getStudentID() <= 0 || fee.getdue() < 0 ||
-        fee.getfeeamount() < 0)
+// Save all records, including payment history.
+void Feehandler::saveToFile()
+{
+    ofstream file(FEE_FILE);
+
+    if (!file.is_open())
     {
-        cout << "Invalid fee record.\n";
+        cout << "Error: Could not save fee records.\n";
         return;
     }
 
     for (int i = 0; i < recordcount; i++)
     {
-        if (feerecords[i].getStudentID() == fee.getStudentID())
+        Fee& fee = feerecords[i];
+
+        file << fee.getStudentID() << '|'
+             << fee.getfeeamount() << '|'
+             << fee.getdate() << '|'
+             << fee.getdue() << '|'
+             << fee.getstatus() << '|'
+             << fee.getpaycount() << '|';
+
+        for (int j = 0; j < fee.getpaycount(); j++)
+        {
+            if (j > 0)
+                file << ',';
+
+            file << fee.getpayment(j);
+        }
+
+        file << '\n';
+    }
+
+    file.close();
+}
+
+void Feehandler::createhashfunction(int count)
+{
+    for (int i = 0; i < MAX; i++)
+        hashtable[i] = -1;
+
+    for (int i = 0; i < count; i++)
+    {
+        int index = feerecords[i].getStudentID() % MAX;
+        int start = index;
+
+        while (hashtable[index] != -1)
+        {
+            index = (index + 1) % MAX;
+
+            if (index == start)
+                return;
+        }
+
+        hashtable[index] = i;
+    }
+}
+
+int Feehandler::findrecords(int id)
+{
+    if (id <= 0)
+        return -1;
+
+    // Refresh records so each Feehandler sees saved changes.
+    loadFromFile();
+
+    int index = id % MAX;
+    int start = index;
+
+    while (hashtable[index] != -1)
+    {
+        int recordIndex = hashtable[index];
+
+        if (feerecords[recordIndex].getStudentID() == id)
+            return recordIndex;
+
+        index = (index + 1) % MAX;
+
+        if (index == start)
+            break;
+    }
+
+    return -1;
+}
+
+void Feehandler::addFeeRecord()
+{
+    // Avoid overwriting records saved by another object.
+    loadFromFile();
+
+    if (recordcount >= MAX)
+    {
+        cout << "Fee record limit reached.\n";
+        return;
+    }
+
+    Fee fee;
+    int sid;
+    float amount;
+    string date;
+
+    cout << "Enter student ID: ";
+    if (!(cin >> sid) || sid <= 0)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Invalid student ID.\n";
+        return;
+    }
+
+    for (int i = 0; i < recordcount; i++)
+    {
+        if (feerecords[i].getStudentID() == sid)
         {
             cout << "A fee record already exists for this student.\n";
             return;
         }
     }
 
-    feerecords[recordcount] = fee;
-    recordcount++;
+    cout << "Enter total fee amount: ";
+    if (!(cin >> amount) || amount < 0)
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Invalid fee amount.\n";
+        return;
+    }
 
+    cout << "Enter date: ";
+    getline(cin >> ws, date);
+
+    fee.setstudentid(sid);
+    fee.setfeeamount(amount);
+    fee.setdue(amount);
+    fee.setdate(date);
+
+    if (amount == 0)
+        fee.setstatus("Paid");
+
+    feerecords[recordcount++] = fee;
 
     createhashfunction(recordcount);
-    cout << "Fee record added successfully.\n";
+    saveToFile();
+
+    cout << "Fee record added and saved successfully.\n";
 }
-void Feehandler::displayfee() 
+
+void Feehandler::displayfee()
 {
+    loadFromFile();
+
     if (recordcount == 0)
     {
         cout << "No fee records available.\n";
@@ -124,21 +235,64 @@ void Feehandler::displayfee()
 
     for (int i = 0; i < recordcount; i++)
     {
-        cout << "\nStudent ID: " << feerecords[i].getStudentID();
-        cout   << "\nTotal fee: " << feerecords[i].getfeeamount();
-        cout  << "\nDue: " << feerecords[i].getdue();
-        cout << "\nStatus: " << feerecords[i].getstatus();
-        cout << "\nDate: " << feerecords[i].getdate() << '\n';
+        cout << "\nStudent ID: " << feerecords[i].getStudentID()
+             << "\nTotal fee: " << feerecords[i].getfeeamount()
+             << "\nDue: " << feerecords[i].getdue()
+             << "\nStatus: " << feerecords[i].getstatus()
+             << "\nDate: " << feerecords[i].getdate() << '\n';
     }
 }
 
-void Feehandler::Makepayment(int id){
-   int  idx=findrecords(id);
-   if (idx==-1){
-    cout<<"No records "<<endl;
+void Feehandler::sortbyduefees(int count)
+{
+    loadFromFile();
 
-   }
-   float amount;
+    if (recordcount == 0)
+    {
+        cout << "No fee records available to sort.\n";
+        return;
+    }
+
+    // Selection sort: lowest outstanding fee first.
+    for (int i = 0; i < recordcount - 1; i++)
+    {
+        int minIndex = i;
+
+        for (int j = i + 1; j < recordcount; j++)
+        {
+            if (feerecords[j].getdue() <
+                feerecords[minIndex].getdue())
+            {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex != i)
+        {
+            Fee temp = feerecords[i];
+            feerecords[i] = feerecords[minIndex];
+            feerecords[minIndex] = temp;
+        }
+    }
+
+    createhashfunction(recordcount);
+    saveToFile();
+
+    cout << "\nRecords sorted by outstanding dues:\n";
+    displayfee();
+}
+
+void Feehandler::Makepayment(int id)
+{
+    int idx = findrecords(id);
+
+    if (idx == -1)
+    {
+        cout << "No fee record found for this student.\n";
+        return;
+    }
+
+    float amount;
 
     cout << "Outstanding fee: Rs. "
          << feerecords[idx].getdue() << '\n';
@@ -150,12 +304,16 @@ void Feehandler::Makepayment(int id){
     }
 
     cout << "Enter payment amount: Rs. ";
-    cin >> amount;
 
-   
+    if (!(cin >> amount))
+    {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Invalid payment amount.\n";
+        return;
+    }
 
-    if (amount <= 0 ||
-        amount > feerecords[idx].getdue())
+    if (amount <= 0 || amount > feerecords[idx].getdue())
     {
         cout << "Invalid payment amount.\n";
         return;
@@ -167,9 +325,7 @@ void Feehandler::Makepayment(int id){
         return;
     }
 
-    float remaining =
-        feerecords[idx].getdue() - amount;
-
+    float remaining = feerecords[idx].getdue() - amount;
     feerecords[idx].setdue(remaining);
 
     if (remaining == 0)
@@ -177,88 +333,131 @@ void Feehandler::Makepayment(int id){
     else
         feerecords[idx].setstatus("Partial");
 
+    saveToFile();
+
     cout << "Payment successful!\n";
     cout << "Remaining due: Rs. " << remaining << '\n';
-
-
 }
-void Feehandler::viewpayments(int id){
-    int  idx=findrecords(id);
-   if (idx==-1){
-    cout<<"No records "<<endl;
 
-   }
-   int c=feerecords[idx].getpaycount();
-   cout<<"\n-----------TRANSACTION HISTORY-----------\n";
-   if (c == 0)
+void Feehandler::viewpayments(int id)
+{
+    int idx = findrecords(id);
+
+    if (idx == -1)
     {
-        cout << "No payment history available.\n";
+        cout << "No fee record found for this student.\n";
         return;
     }
 
+    Fee& fee = feerecords[idx];
 
-    for (int i = 0; i < c; i++)
+    cout << "\n------ TRANSACTION HISTORY ------\n";
+
+    if (fee.getpaycount() == 0)
     {
-        cout << "Payment " << i + 1 << ": Rs. "
-             << feerecords[idx].getpayment(i) << '\n';
+        cout << "No payment history available.\n";
+    }
+    else
+    {
+        for (int i = 0; i < fee.getpaycount(); i++)
+        {
+            cout << "Payment " << i + 1 << ": Rs. "
+                 << fee.getpayment(i) << '\n';
+        }
     }
 
     cout << "Total paid: Rs. "
-         << feerecords[idx].getfeeamount()
-            - feerecords[idx].getdue() << '\n';
+         << fee.getfeeamount() - fee.getdue() << '\n';
 
-    cout << "Due fees: Rs. "
-         << feerecords[idx].getdue() << '\n';
+    cout << "Due fees: Rs. " << fee.getdue() << '\n';
 }
 
-
-void Feehandler::Studentfeedashboard(int id){
+void Feehandler::Studentfeedashboard(int id)
+{
     int ch;
-    do{
-            cout<<"----Student Fee Portal-----"<<endl;
-            cout<<"1.Make Payment"<<endl;
-            cout<<"2.View previous payments"<<endl;
-            cout<<"3.Return to Student menu"<<endl;
-            cout<<"Enter Choice"<<endl;
-            cin>>ch;
-            switch(ch){
-                case 1:
-                       Makepayment( id);
-                        break;
-                case 2:viewpayments(id);
-                        break;
-                case 3:cout<<"Back to Main Menu";
-                       return ;
-                default:cout<<"Invalid Choice ";
-                
-            }
-    }while(ch!=3);
 
-}
-void Feehandler::AdminfeeDashboard(){
-        int ch;
-    do{
-            cout<<"----Student Fee Portal-----"<<endl;
-            cout<<"1.Sort Record by dues"<<endl;
-            cout<<"2.View all records"<<endl;
-            cout<<"3.Add Record"<<endl;
-            cout<<"4.Return to Admin menu"<<endl;
-            cout<<"Enter Choice"<<endl;
-            cin>>ch;
-            switch(ch){
-                case 1:
-                        {int rcount=getrecordcount();
-                        sortbyduefees(rcount);
-                        break;}
-                case 2:displayfee();
-                        break;
-                case 3:
-                        addFeeRecord();
-                         break;
-                case 4:cout<<"Back to Main Menu";
-                       return ;
-                default:cout<<"Invalid Choice";
-                
+    do
+    {
+        cout << "\n---- Student Fee Portal ----\n";
+        cout << "1. Make Payment\n";
+        cout << "2. View Previous Payments\n";
+        cout << "3. View Fee Details\n";
+        cout << "4. Return to Student Menu\n";
+        cout << "Enter choice: ";
+        cin >> ch;
+
+        switch (ch)
+        {
+        case 1:
+            Makepayment(id);
+            break;
+
+        case 2:
+            viewpayments(id);
+            break;
+
+        case 3:
+        {
+            int idx = findrecords(id);
+
+            if (idx == -1)
+                cout << "No fee record found for this student.\n";
+            else
+            {
+                Fee& fee = feerecords[idx];
+
+                cout << "\nTotal fee: Rs. " << fee.getfeeamount()
+                     << "\nDue: Rs. " << fee.getdue()
+                     << "\nStatus: " << fee.getstatus()
+                     << "\nDate: " << fee.getdate() << '\n';
             }
-    }while(ch!=4);
+            break;
+        }
+
+        case 4:
+            return;
+
+        default:
+            cout << "Invalid choice.\n";
+        }
+
+    } while (ch != 4);
+}
+
+void Feehandler::AdminfeeDashboard()
+{
+    int ch;
+
+    do
+    {
+        cout << "\n---- Admin Fee Portal ----\n";
+        cout << "1. Sort Records by Dues\n";
+        cout << "2. View All Records\n";
+        cout << "3. Add Record\n";
+        cout << "4. Return to Admin Menu\n";
+        cout << "Enter choice: ";
+        cin >> ch;
+
+        switch (ch)
+        {
+        case 1:
+            sortbyduefees(getrecordcount());
+            break;
+
+        case 2:
+            displayfee();
+            break;
+
+        case 3:
+            addFeeRecord();
+            break;
+
+        case 4:
+            return;
+
+        default:
+            cout << "Invalid choice.\n";
+        }
+
+    } while (ch != 4);
 }
