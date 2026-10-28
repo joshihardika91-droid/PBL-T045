@@ -21,12 +21,20 @@ public:
     Student(){ StudentId = 0;
     Course = "Not assigned";
     RoomNo = "Not assigned";}
+    void SetCourse(string course) {
+    Course = course;
+        }
+
+        string getCourse() {
+            return Course;
+        }
     void ViewProfile();
     void SetStudentDetails(int id, string name);
     void StudentMenu(int );
     int getStudentID(){return StudentId;}
+    
+bool LoadStudentDetails();
+bool SaveStudentDetails();
 };
-
-
 
 #endif

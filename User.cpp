@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include "User.h"
+#include"student.h"
 using namespace std;
 
 User *User::users = NULL;
@@ -246,9 +247,22 @@ void User::UpdateStatus()
 
             if (choice == 1)
             {
-                users[i].Status = "Approved";
-                saveUsers();
-                cout << "Student approved successfully.\n";
+                    string course;
+
+                cout << "Enter student's course: ";
+                cin.ignore();
+                getline(cin, course);
+
+                Student student;
+                student.SetStudentDetails(stoi(id), users[i].Name);
+                student.SetCourse(course);
+
+                if (student.SaveStudentDetails())
+                {
+                    users[i].Status = "Approved";
+                    saveUsers();
+                    cout << "Student approved successfully.\n";
+                }
             }
             else if (choice == 2)
             {

@@ -84,6 +84,8 @@ private:
     int recordcount;
 
     void createhashfunction(int count);
+    void merge(Fee arr[], int left, int mid, int right);
+    void mergeSort(Fee arr[], int left, int right);
 
 public:
     Feehandler()
@@ -107,13 +109,13 @@ public:
     int getrecordcount() { return recordcount; }
 
     void loadFromFile();
-    void saveToFile();
+    bool saveToFile();
 
-    void sortbyduefees(int count);
+    
     int findrecords(int id);
     void displayfee();
     void addFeeRecord();
-
+    void sortbyduefeesMerge();
     void Studentfeedashboard(int id);
     void AdminfeeDashboard();
     void Makepayment(int id);
