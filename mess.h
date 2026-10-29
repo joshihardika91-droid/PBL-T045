@@ -5,7 +5,6 @@
 #include <string>
 using namespace std;
 
-
 class Mess
 {
 private:
@@ -16,7 +15,16 @@ private:
     string breakfastTime;
     string lunchTime;
     string dinnerTime;
+
+public:
+    Mess();
+
+    void showMenu();
+    void showTimings();
+
+    void changeMenu();
+    void changeTimings();
+
+    void adminMenu();
 };
-
-
 #endif
