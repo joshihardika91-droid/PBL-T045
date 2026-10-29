@@ -9,24 +9,6 @@
 #include <queue>
 using namespace std;
 
-typedef struct StudentNode
-{
-    int Id;
-    StudentNode* next;
-}sn;
-
-typedef struct RoomNode
-{
-    int room_no;
-    int capacity;
-    int occupied;
-
-    sn* students;
-    RoomNode* next;
-
-   
-}rn;
-
 struct RoomNode
 {
     string type;
