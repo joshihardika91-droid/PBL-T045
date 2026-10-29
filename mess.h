@@ -8,13 +8,12 @@ using namespace std;
 class Mess
 {
 private:
-    string breakfast;
-    string lunch;
-    string dinner;
+    string days[7];
 
-    string breakfastTime;
-    string lunchTime;
-    string dinnerTime;
+    string menu[7][4];
+
+    string timings[7][4];
+    
 
 public:
     Mess();
