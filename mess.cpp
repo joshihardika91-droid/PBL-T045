@@ -61,3 +61,33 @@ Mess::Mess()
         timings[i][3] = "8:00 PM - 9:00 PM";    // Dinner
     }
 }
+
+void Mess::showMenu()
+{
+    cout << "\n========== WEEKLY MESS MENU ==========\n";
+
+    for(int i = 0; i < 7; i++)
+    {
+        cout << "\n" << days[i] << ":\n";
+
+        cout << "Breakfast : " << menu[i][0] << endl;
+        cout << "Lunch     : " << menu[i][1] << endl;
+        cout << "Snacks    : " << menu[i][2] << endl;
+        cout << "Dinner    : " << menu[i][3] << endl;
+    }
+}
+
+void Mess::showTimings()
+{
+    cout << "\n========== MESS TIMINGS ==========\n";
+
+    for(int i = 0; i < 7; i++)
+    {
+        cout << "\n" << days[i] << ":\n";
+
+        cout << "Breakfast : " << timings[i][0] << endl;
+        cout << "Lunch     : " << timings[i][1] << endl;
+        cout << "Snacks    : " << timings[i][2] << endl;
+        cout << "Dinner    : " << timings[i][3] << endl;
+    }
+}
