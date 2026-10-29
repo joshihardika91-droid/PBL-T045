@@ -183,3 +183,48 @@ void Mess::changeTimings()
 
     cout << "\nTiming updated successfully!\n";
 }
+
+void Mess::adminMenu()
+{
+    int choice;
+
+    do
+    {
+        cout << "\n========== MESS MANAGEMENT ==========\n";
+        cout << "1. View Weekly Menu\n";
+        cout << "2. View Timings\n";
+        cout << "3. Change Menu\n";
+        cout << "4. Change Timings\n";
+        cout << "5. Exit\n";
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch(choice)
+        {
+            case 1:
+                showMenu();
+                break;
+
+            case 2:
+                showTimings();
+                break;
+
+            case 3:
+                changeMenu();
+                break;
+
+            case 4:
+                changeTimings();
+                break;
+
+            case 5:
+                cout << "Exiting Mess Management...\n";
+                break;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+
+    } while(choice != 5);
+}
