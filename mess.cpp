@@ -91,3 +91,95 @@ void Mess::showTimings()
         cout << "Dinner    : " << timings[i][3] << endl;
     }
 }
+
+void Mess::changeMenu()
+{
+    int day;
+    int meal;
+
+    cout << "\n========== CHANGE MENU ==========\n";
+
+    cout << "1. Monday\n";
+    cout << "2. Tuesday\n";
+    cout << "3. Wednesday\n";
+    cout << "4. Thursday\n";
+    cout << "5. Friday\n";
+    cout << "6. Saturday\n";
+    cout << "7. Sunday\n";
+
+    cout << "Select day: ";
+    cin >> day;
+
+    if(day < 1 || day > 7)
+    {
+        cout << "Invalid day!\n";
+        return;
+    }
+
+    cout << "\n1. Breakfast\n";
+    cout << "2. Lunch\n";
+    cout << "3. Snacks\n";
+    cout << "4. Dinner\n";
+
+    cout << "Select meal: ";
+    cin >> meal;
+
+    if(meal < 1 || meal > 4)
+    {
+        cout << "Invalid meal!\n";
+        return;
+    }
+
+    cin.ignore();
+
+    cout << "Enter new menu: ";
+    getline(cin, menu[day - 1][meal - 1]);
+
+    cout << "\nMenu updated successfully!\n";
+}
+
+void Mess::changeTimings()
+{
+    int day;
+    int meal;
+
+    cout << "\n========== CHANGE TIMING ==========\n";
+
+    cout << "1. Monday\n";
+    cout << "2. Tuesday\n";
+    cout << "3. Wednesday\n";
+    cout << "4. Thursday\n";
+    cout << "5. Friday\n";
+    cout << "6. Saturday\n";
+    cout << "7. Sunday\n";
+
+    cout << "Select day: ";
+    cin >> day;
+
+    if(day < 1 || day > 7)
+    {
+        cout << "Invalid day!\n";
+        return;
+    }
+
+    cout << "\n1. Breakfast\n";
+    cout << "2. Lunch\n";
+    cout << "3. Snacks\n";
+    cout << "4. Dinner\n";
+
+    cout << "Select meal: ";
+    cin >> meal;
+
+    if(meal < 1 || meal > 4)
+    {
+        cout << "Invalid meal!\n";
+        return;
+    }
+
+    cin.ignore();
+
+    cout << "Enter new timing: ";
+    getline(cin, timings[day - 1][meal - 1]);
+
+    cout << "\nTiming updated successfully!\n";
+}
