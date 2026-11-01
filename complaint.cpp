@@ -23,6 +23,7 @@ void Complaint::resolve_Complaint(){
     cout << "Complaint marked as resolved" << endl;
 }
 
+
 ComplaintManagement::ComplaintManagement()
 {
     complaintCount = 0;
@@ -39,10 +40,11 @@ void ComplaintManagement::submit()
         return;
     }
 
-    
+
     if (front == -1)
         front = 0;
 
+    
     rear = (rear + 1) % 100;
 
     complaints[rear].submit_Complaint();
@@ -84,7 +86,7 @@ void ComplaintManagement::resolve()
 
     complaints[front].resolve_Complaint();
 
-
+    
     if (front == rear)
     {
         front = rear = -1;
@@ -95,4 +97,70 @@ void ComplaintManagement::resolve()
     }
 
     complaintCount--;
+}
+
+ComplaintManagement complaintSystem;
+
+void ComplaintManagement:: StudentComplaintMenu()
+{
+    int choice;
+
+    do
+    {
+        cout << "\n----- STUDENT COMPLAINT MENU -----" << endl;
+        cout << "1. Submit Complaint" << endl;
+        cout << "2. Back" << endl;
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:
+                complaintSystem.submit();
+                break;
+
+            case 2:
+                cout << "Returning to Student Menu..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice!" << endl;
+        }
+
+    } while (choice != 2);
+}
+
+
+void ComplaintManagement:: AdminComplaintMenu()
+{
+    int choice;
+
+    do
+    {
+        cout << "\n----- ADMIN COMPLAINT MENU -----" << endl;
+        cout << "1. View Complaints" << endl;
+        cout << "2. Resolve Complaint" << endl;
+        cout << "3. Back" << endl;
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:
+                complaintSystem.view_Complaints();
+                break;
+
+            case 2:
+                complaintSystem.resolve();
+                break;
+
+            case 3:
+                cout << "Returning to Admin Menu..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice!" << endl;
+        }
+
+    } while (choice != 3);
 }
