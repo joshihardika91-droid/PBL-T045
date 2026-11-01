@@ -20,52 +20,80 @@ void Complaint::resolve_Complaint(){
     status = "Resolved";
     cout << "Complaint marked as resolved" << endl;
 }
-
-ComplaintManagement::ComplaintManagement(){
-     complaintCount = 0;
+ComplaintManagement::ComplaintManagement()
+{
+    complaintCount = 0;
     front = -1;
     rear = -1;
 }
 
-void ComplaintManagement::submit(){
-    if (rear == 99)
-    { cout << "Complaint queue is full!" << endl;
+void ComplaintManagement::submit()
+{
+    
+    if ((rear + 1) % 100 == front)
+    {
+        cout << "Complaint queue is full!" << endl;
         return;
     }
+
 
     if (front == -1)
         front = 0;
 
-    rear++;
+    
+    rear = (rear + 1) % 100;
+
     complaints[rear].submit_Complaint();
+
+    complaintCount++;
 }
-void ComplaintManagement::view_Complaints(){
+
+void ComplaintManagement::view_Complaints()
+{
     if (front == -1)
-    {   cout << "No complaints available!" << endl;
+    {
+        cout << "No complaints available!" << endl;
         return;
     }
 
-    for (int i = front; i <= rear; i++)
-    {    cout << "\nComplaint Number: " << i + 1 << endl;
+    int i = front;
+    int count = 1;
+
+    while (true)
+    {
+        cout << "\nComplaint Number: " << count << endl;
         complaints[i].display_Complaint();
+
+        if (i == rear)
+            break;
+
+        i = (i + 1) % 100;
+        count++;
     }
 }
 
 void ComplaintManagement::resolve()
-{if (front == -1)
+{
+    if (front == -1)
     {
         cout << "No complaints to resolve!" << endl;
         return;
     }
 
     complaints[front].resolve_Complaint();
-    front++;
 
-    if (front > rear)
-        front = rear = -1;
     
-}
+    if (front == rear)
+    {
+        front = rear = -1;
+    }
+    else
+    {
+        front = (front + 1) % 100;
+    }
 
+    complaintCount--;
+}
 
 
 ComplaintManagement complaintSystem;
