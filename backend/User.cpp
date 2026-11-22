@@ -3,6 +3,7 @@
 #include <string>
 #include "User.h"
 #include"student.h"
+#include "db.h"
 using namespace std;
 
 User *User::users = NULL;
@@ -17,71 +18,56 @@ void User::loadUsers()
     }
     userCount = 0;
 
-    ifstream fin("users.txt");
-    if (!fin)
+    vector<vector<string> > rows;
+    string sql = "SELECT user_id, name, password, role, status FROM users ORDER BY id";
+
+    if (!dbQuery(sql, rows))
     {
         return;
     }
-    string line;
-    int count = 0;
-    while (getline(fin, line))
-    {
-        if (line != "")
-        {
-            count++;
-        }
-    }
-    fin.close();
 
+    int count = rows.size();
     if (count == 0)
     {
         return;
     }
+
     users = new User[count];
 
-    ifstream fin2("users.txt");
-    while (getline(fin2, line) && userCount < count)
+    for (int i = 0; i < count; i++)
     {
-        if (line == "")
-        {
-            continue;
-        }
-        string parts[5];
-        int p = 0;
-        for (int i = 0; i < line.length(); i++)
-        {
-            if (line[i] == '|')
-            {
-                p++;
-                if (p > 4)
-                {
-                    break;
-                }
-            }
-            else
-            {
-                parts[p] += line[i];
-            }
-        }
-        users[userCount].UserId = parts[0];
-        users[userCount].Name = parts[1];
-        users[userCount].Password = parts[2];
-        users[userCount].Role = parts[3];
-        users[userCount].Status = parts[4];
+        users[i].UserId = rows[i][0];
+        users[i].Name = rows[i][1];
+        users[i].Password = rows[i][2];
+        users[i].Role = rows[i][3];
+        users[i].Status = rows[i][4];
         userCount++;
     }
-    fin2.close();
 }
 
 void User::saveUsers()
 {
-    ofstream fout("users.txt");
+    dbBegin();
+
     for (int i = 0; i < userCount; i++)
     {
-        fout << users[i].UserId << "|" << users[i].Name << "|" << users[i].Password << "|"
-             << users[i].Role << "|" << users[i].Status << endl;
+        string sql = "INSERT INTO users (user_id, name, password, role, status) VALUES ('"
+                     + dbEscape(users[i].UserId) + "', '"
+                     + dbEscape(users[i].Name) + "', '"
+                     + dbEscape(users[i].Password) + "', '"
+                     + dbEscape(users[i].Role) + "', '"
+                     + dbEscape(users[i].Status) + "') "
+                     "ON CONFLICT(user_id) DO UPDATE SET name = excluded.name, password = excluded.password, "
+                     "role = excluded.role, status = excluded.status";
+
+        if (!dbExecute(sql))
+        {
+            dbRollback();
+            return;
+        }
     }
-    fout.close();
+
+    dbCommit();
 }
 
 void User::Register()

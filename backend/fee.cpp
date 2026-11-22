@@ -1,13 +1,23 @@
-
 #include "fee.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cstdio>
+#include <vector>
+#include <stdexcept>
+#include "db.h"
 
 using namespace std;
 
-const string FEE_FILE = "fees.txt";
+// money as text with 2 decimals, for the DECIMAL columns
+static string money(float amount)
+{
+    char buffer[40];
+    sprintf(buffer, "%.2f", amount);
+    return string(buffer);
+}
+
 void Feehandler::loadFromFile()
 {
     recordcount = 0;
@@ -15,116 +25,104 @@ void Feehandler::loadFromFile()
     for (int i = 0; i < MAX; i++)
         hashtable[i] = -1;
 
-    ifstream file(FEE_FILE);
+    vector<vector<string> > rows;
+    string sql = "SELECT student_id, fee_amount, fee_date, due, status FROM fees "
+                 "ORDER BY pos, student_id LIMIT " + to_string(MAX);
 
-    if (!file.is_open())
-        return;  // First run: file may not exist yet.
+    if (!dbQuery(sql, rows))
+        return;
 
-    string line;
-
-    while (getline(file, line) && recordcount < MAX)
+    for (int i = 0; i < (int)rows.size() && recordcount < MAX; i++)
     {
-        if (line.empty())
-            continue;
-
-        stringstream ss(line);
-        string field;
         Fee fee;
 
         try
         {
-            getline(ss, field, '|');
-            fee.setstudentid(stoi(field));
-
-            getline(ss, field, '|');
-            fee.setfeeamount(stof(field));
-
-            getline(ss, field, '|');
-            fee.setdate(field);
-
-            getline(ss, field, '|');
-            fee.setdue(stof(field));
-
-            getline(ss, field, '|');
-            fee.setstatus(field);
-
-            getline(ss, field, '|');
-            int count = stoi(field);
-
-            getline(ss, field, '|');
-            stringstream paymentStream(field);
-            string payment;
-
-            for (int i = 0; i < count && i < 100; i++)
-            {
-                if (getline(paymentStream, payment, ','))
-                    fee.loadpayment(stof(payment));
-            }
+            fee.setstudentid(stoi(rows[i][0]));
+            fee.setfeeamount(stof(rows[i][1]));
+            fee.setdate(rows[i][2]);
+            fee.setdue(stof(rows[i][3]));
+            fee.setstatus(rows[i][4]);
 
             if (fee.getStudentID() > 0)
                 feerecords[recordcount++] = fee;
         }
-            catch (const invalid_argument& e)
-            {
-                cerr << "Invalid data in fee record: "
-                    << e.what() << '\n';
-            }
-            catch (const out_of_range& e)
-            {
-                cerr << "Number out of range in fee record: "
-                    << e.what() << '\n';
+        catch (const invalid_argument& e)
+        {
+            cerr << "Invalid data in fee record: "
+                 << e.what() << '\n';
+        }
+        catch (const out_of_range& e)
+        {
+            cerr << "Number out of range in fee record: "
+                 << e.what() << '\n';
         }
     }
-    file.close();
+
     createhashfunction(recordcount);
+
+    // payment history of every student
+    vector<vector<string> > payments;
+    sql = "SELECT student_id, amount FROM fee_payments ORDER BY student_id, pay_no";
+
+    if (dbQuery(sql, payments))
+    {
+        for (int i = 0; i < (int)payments.size(); i++)
+        {
+            int idx = findrecords(stoi(payments[i][0]));
+
+            if (idx != -1)
+                feerecords[idx].loadpayment(stof(payments[i][1]));
+        }
+    }
 }
 
 bool Feehandler::saveToFile()
 {
-    ofstream file(FEE_FILE);
-
-    if (!file.is_open())
+    if (!dbBegin())
     {
-        cerr << "Error: Could not open fee file for saving.\n";
+        cerr << "Error: Could not start database transaction.\n";
         return false;
     }
+
     for (int i = 0; i < recordcount; i++)
     {
         Fee& fee = feerecords[i];
+        string sid = to_string(fee.getStudentID());
 
-        file << fee.getStudentID() << '|'
-             << fee.getfeeamount() << '|'
-             << fee.getdate() << '|'
-             << fee.getdue() << '|'
-             << fee.getstatus() << '|'
-             << fee.getpaycount() << '|';
+        string sql = "INSERT INTO fees (student_id, fee_amount, fee_date, due, status, pos) VALUES ("
+                     + sid + ", "
+                     + money(fee.getfeeamount()) + ", '"
+                     + dbEscape(fee.getdate()) + "', "
+                     + money(fee.getdue()) + ", '"
+                     + dbEscape(fee.getstatus()) + "', "
+                     + to_string(i) + ") "
+                     "ON CONFLICT(student_id) DO UPDATE SET fee_amount = excluded.fee_amount, fee_date = excluded.fee_date, "
+                     "due = excluded.due, status = excluded.status, pos = excluded.pos";
 
-        for (int j = 0; j < fee.getpaycount(); j++)
+        if (!dbExecute(sql))
         {
-            if (j > 0)
-                file << ',';
-
-            file << fee.getpayment(j);
-        }
-
-        file << '\n';
-
-        if (!file)
-        {
+            dbRollback();
             cerr << "Error: Failed while writing fee records.\n";
             return false;
         }
+
+        // payments are only ever added, so INSERT OR IGNORE skips the ones already saved
+        for (int j = 0; j < fee.getpaycount(); j++)
+        {
+            sql = "INSERT OR IGNORE INTO fee_payments (student_id, pay_no, amount) VALUES ("
+                  + sid + ", " + to_string(j + 1) + ", " + money(fee.getpayment(j)) + ")";
+
+            if (!dbExecute(sql))
+            {
+                dbRollback();
+                cerr << "Error: Failed while writing payment history.\n";
+                return false;
+            }
+        }
     }
 
-    file.close();
-
-    if (file.fail())
-    {
-        cerr << "Error: Failed to close fee file properly.\n";
-        return false;
-    }
-
-    return true;
+    return dbCommit();
 }
 void Feehandler::createhashfunction(int count)
 {

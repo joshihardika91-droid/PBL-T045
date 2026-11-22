@@ -1,4 +1,5 @@
 #include "leave.h"
+#include "db.h"
 
 Leave::Leave() {
     id = 0;
@@ -54,31 +55,17 @@ void Leave::display() {
     cout << "Status     : " << status << endl;
 }
 
-void Leave::saveToFile(ofstream &fout) {
-    fout << id << endl;
-    fout << type << endl;
-    fout << studentId << endl;
-    fout << studentName << endl;
-    fout << reason << endl;
-    fout << fromDate << endl;
-    fout << toDate << endl;
-    fout << status << endl;
-}
-
-bool Leave::loadFromFile(ifstream &fin) {
-    fin >> id;
-    if (fin.fail()) {
-        return false;
-    }
-    fin >> type;
-    fin.ignore();
-    getline(fin, studentId);
-    getline(fin, studentName);
-    getline(fin, reason);
-    getline(fin, fromDate);
-    getline(fin, toDate);
-    getline(fin, status);
-    return true;
+string Leave::getSaveSql() {
+    return "INSERT INTO leaves (leave_id, type, student_id, student_name, reason, from_date, to_date, status) VALUES ("
+           + to_string(id) + ", "
+           + to_string(type) + ", '"
+           + dbEscape(studentId) + "', '"
+           + dbEscape(studentName) + "', '"
+           + dbEscape(reason) + "', '"
+           + dbEscape(fromDate) + "', '"
+           + dbEscape(toDate) + "', '"
+           + dbEscape(status) + "') "
+           "ON CONFLICT(leave_id) DO UPDATE SET status = excluded.status";
 }
 
 LeaveManager::LeaveManager() {
@@ -87,30 +74,40 @@ LeaveManager::LeaveManager() {
 }
 
 void LeaveManager::loadData() {
-    ifstream fin("leaves.txt");
-    if (!fin) {
+    vector<vector<string> > rows;
+    string sql = "SELECT leave_id, type, student_id, student_name, reason, from_date, to_date, status "
+                 "FROM leaves ORDER BY leave_id";
+
+    if (!dbQuery(sql, rows)) {
         return;
     }
 
-    Leave l;
-    while (l.loadFromFile(fin)) {
+    for (int i = 0; i < rows.size(); i++) {
+        Leave l(stoi(rows[i][0]), rows[i][2], rows[i][3], rows[i][4],
+                rows[i][5], rows[i][6], stoi(rows[i][1]));
+        l.setStatus(rows[i][7]);
+
         allLeaves.push_back(l);
         if (l.getStatus() == "Pending") {
             pending.push(make_pair(l.getType(), -l.getId()));
         }
     }
-    fin.close();
 
     nextId = allLeaves.size() + 1;
 }
 
 
 void LeaveManager::saveData() {
-    ofstream fout("leaves.txt");
+    dbBegin();
+
     for (int i = 0; i < allLeaves.size(); i++) {
-        allLeaves[i].saveToFile(fout);
+        if (!dbExecute(allLeaves[i].getSaveSql())) {
+            dbRollback();
+            return;
+        }
     }
-    fout.close();
+
+    dbCommit();
 }
 
 void LeaveManager::applyLeave(string studentId, string studentName) {

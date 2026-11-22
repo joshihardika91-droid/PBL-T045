@@ -31,8 +31,7 @@ public:
     void setStatus(string newStatus);
 
     void display();
-    void saveToFile(ofstream &fout);
-    bool loadFromFile(ifstream &fin);
+    string getSaveSql();
 };
 
 class LeaveManager {
@@ -59,6 +58,3 @@ public:
 };
 
 #endif
-
-
-

@@ -1,6 +1,7 @@
 #include "room_allocation.h"
 #include <fstream>
 #include <sstream>
+#include "db.h"
 using namespace std;
 
 
@@ -36,81 +37,39 @@ RoomNode* searchRoom(RoomNode* node, string roomNo)
     return NULL;
 }
 
-// update a student's room in student_details.txt
+// update a student's room in the student_details table
 bool updateStudentRoom(int studentID, string roomNo)
 {
-    ifstream fin("student_details.txt");
-    if (!fin)
+    vector<vector<string> > rows;
+    string check = "SELECT student_id FROM student_details WHERE student_id = " + to_string(studentID);
+
+    if (!dbQuery(check, rows) || rows.size() == 0)
     {
         return false;
     }
 
-    vector<string> lines;
-    string line;
-    bool found = false;
+    string sql = "UPDATE student_details SET room_no = '" + dbEscape(roomNo) +
+                 "' WHERE student_id = " + to_string(studentID);
 
-    while (getline(fin, line))
-    {
-        stringstream ss(line);
-        string id, course, room;
-
-        getline(ss, id, '|');
-        getline(ss, course, '|');
-        getline(ss, room, '|');
-
-        if (id == to_string(studentID))
-        {
-            lines.push_back(id + "|" + course + "|" + roomNo);
-            found = true;
-        }
-        else
-        {
-            lines.push_back(line);
-        }
-    }
-    fin.close();
-
-    if (!found)
-    {
-        return false;
-    }
-
-    ofstream fout("student_details.txt");
-    if (!fout)
-    {
-        return false;
-    }
-    for (int i = 0; i < lines.size(); i++)
-    {
-        fout << lines[i] << endl;
-    }
-    fout.close();
-    return true;
+    return dbExecute(sql);
 }
 
 // check if student already has a room
 bool studentHasRoom(int studentID)
 {
-    ifstream fin("student_details.txt");
-    string line;
+    vector<vector<string> > rows;
+    string sql = "SELECT room_no FROM student_details WHERE student_id = " + to_string(studentID);
 
-    while (getline(fin, line))
+    if (!dbQuery(sql, rows) || rows.size() == 0)
     {
-        stringstream ss(line);
-        string id, course, room;
+        return false;
+    }
 
-        getline(ss, id, '|');
-        getline(ss, course, '|');
-        getline(ss, room, '|');
+    string room = rows[0][0];
 
-        if (id == to_string(studentID))
-        {
-            if (room != "" && room != "Not assigned")
-            {
-                return true;
-            }
-            return false;
-        }
+    if (room != "" && room != "Not assigned")
+    {
+        return true;
     }
     return false;
 }
@@ -206,14 +165,7 @@ void RoomAllocation::displayTree(RoomNode* node, int level)
 
 void RoomAllocation::saveRooms()
 {
-    ofstream fout("room_details.txt");
-    if (!fout)
-    {
-        cout << "Could not save room details." << endl;
-        return;
-    }
-
-    fout << "HostelName|Floor|RoomNo|StudentIDs" << endl;
+    dbBegin();
 
     for (int i = 0; i < root->children.size(); i++)
     {
@@ -225,80 +177,93 @@ void RoomAllocation::saveRooms()
             {
                 RoomNode* room = floor->children[k];
 
-                fout << hostel->name << "|" << floor->name << "|" << room->name << "|";
+                // rooms and residents are only ever added, so INSERT OR IGNORE skips the saved ones
+                string sql = "INSERT OR IGNORE INTO rooms (hostel, floor_name, room_no) VALUES ('"
+                             + dbEscape(hostel->name) + "', '"
+                             + dbEscape(floor->name) + "', '"
+                             + dbEscape(room->name) + "')";
+
+                if (!dbExecute(sql))
+                {
+                    dbRollback();
+                    cout << "Could not save room details." << endl;
+                    return;
+                }
 
                 for (int m = 0; m < room->studentIDs.size(); m++)
                 {
-                    if (m > 0)
+                    sql = "INSERT OR IGNORE INTO room_residents (room_no, student_id) VALUES ('"
+                          + dbEscape(room->name) + "', "
+                          + to_string(room->studentIDs[m]) + ")";
+
+                    if (!dbExecute(sql))
                     {
-                        fout << ",";
+                        dbRollback();
+                        cout << "Could not save room details." << endl;
+                        return;
                     }
-                    fout << room->studentIDs[m];
                 }
-                fout << endl;
             }
         }
     }
-    fout.close();
+
+    dbCommit();
 }
+
 void RoomAllocation::loadRooms()
 {
     deleteRoomTree(root);
     root = new RoomNode("Root", "Root");
 
-    ifstream fin("room_details.txt");
-    string line;
-
-    while (getline(fin, line))
+    vector<vector<string> > rooms;
+    if (!dbQuery("SELECT hostel, floor_name, room_no FROM rooms ORDER BY id", rooms))
     {
-        stringstream ss(line);
-        string hostel, floor, roomNo, students;
+        return;
+    }
 
-        getline(ss, hostel, '|');
-        getline(ss, floor, '|');
-        getline(ss, roomNo, '|');
-        getline(ss, students);
+    for (int i = 0; i < rooms.size(); i++)
+    {
+        addRoomToTree(rooms[i][0], rooms[i][1], rooms[i][2]);
+    }
 
-        if (hostel == "HostelName" || hostel == "")
+    vector<vector<string> > residents;
+    if (!dbQuery("SELECT room_no, student_id FROM room_residents ORDER BY id", residents))
+    {
+        return;
+    }
+
+    for (int i = 0; i < residents.size(); i++)
+    {
+        RoomNode* room = findRoom(residents[i][0]);
+        if (room != NULL)
         {
-            continue;
-        }
-
-        addRoomToTree(hostel, floor, roomNo);
-        RoomNode* room = findRoom(roomNo);
-
-        stringstream studentStream(students);
-        string id;
-        while (getline(studentStream, id, ','))
-        {
-            if (id != "")
-            {
-                room->studentIDs.push_back(stoi(id));
-            }
+            room->studentIDs.push_back(stoi(residents[i][1]));
         }
     }
-    fin.close();
 }
 
 void RoomAllocation::saveRequests()
 {
-    ofstream fout("room_requests.txt");
-    if (!fout)
-    {
-        cout << "Could not save requests." << endl;
-        return;
-    }
-
-    fout << "RequestID|StudentID|RequestedRoom|Status" << endl;
+    dbBegin();
 
     for (int i = 0; i < requests.size(); i++)
     {
-        fout << requests[i].requestID << "|"
-             << requests[i].studentID << "|"
-             << requests[i].roomNo << "|"
-             << requests[i].status << endl;
+        string sql = "INSERT INTO room_requests (request_id, student_id, room_no, status) VALUES ("
+                     + to_string(requests[i].requestID) + ", "
+                     + to_string(requests[i].studentID) + ", '"
+                     + dbEscape(requests[i].roomNo) + "', '"
+                     + dbEscape(requests[i].status) + "') "
+                     "ON CONFLICT(request_id) DO UPDATE SET status = excluded.status";
+
+        if (!dbExecute(sql))
+        {
+            dbRollback();
+            cout << "Could not save requests." << endl;
+            return;
+        }
     }
-    fout.close();
+
+    dbCommit();
 }
 
 void RoomAllocation::loadRequests()
@@ -306,29 +271,21 @@ void RoomAllocation::loadRequests()
     requests.clear();
     requestQueue = priority_queue<RoomRequest, vector<RoomRequest>, CompareRequest>();
 
-    ifstream fin("room_requests.txt");
-    string line;
+    vector<vector<string> > rows;
+    string sql = "SELECT request_id, student_id, room_no, status FROM room_requests ORDER BY request_id";
 
-    while (getline(fin, line))
+    if (!dbQuery(sql, rows))
     {
-        stringstream ss(line);
-        string requestID, studentID, roomNo, status;
+        return;
+    }
 
-        getline(ss, requestID, '|');
-        getline(ss, studentID, '|');
-        getline(ss, roomNo, '|');
-        getline(ss, status, '|');
-
-        if (requestID == "RequestID" || requestID == "")
-        {
-            continue;
-        }
-
+    for (int i = 0; i < rows.size(); i++)
+    {
         RoomRequest request;
-        request.requestID = stoi(requestID);
-        request.studentID = stoi(studentID);
-        request.roomNo = roomNo;
-        request.status = status;
+        request.requestID = stoi(rows[i][0]);
+        request.studentID = stoi(rows[i][1]);
+        request.roomNo = rows[i][2];
+        request.status = rows[i][3];
 
         requests.push_back(request);
 
@@ -341,7 +298,6 @@ void RoomAllocation::loadRequests()
             requestQueue.push(request);
         }
     }
-    fin.close();
 }
 
 void RoomAllocation::requestRoom(int studentID)

@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hostel Management System - HostelMate</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #f0f4f8; min-height: 100vh; color: #333; }
+
+  /* ---------- Top Bar ---------- */
+  .topbar {
+    background: #1e3a5f; color: #fff; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .topbar h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
+  .topbar .user-info { font-size: 14px; background: rgba(255,255,255,0.12); padding: 5px 12px; border-radius: 20px; }
+  .topbar button {
+    background: #e74c3c; color: #fff; border: none; padding: 7px 14px;
+    border-radius: 5px; cursor: pointer; margin-left: 12px; font-size: 13px; font-weight: 600;
+  }
+  .topbar button:hover { background: #c0392b; }
+
+  /* ---------- Pages ---------- */
+  .page { display: none; padding: 26px 18px; max-width: 900px; margin: 0 auto; }
+  .page.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---------- Login ---------- */
+  .login-box {
+    background: #fff; max-width: 420px; margin: 40px auto; padding: 30px;
+    border-radius: 10px; box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+  }
+  .login-box h2 { text-align: center; color: #1e3a5f; margin-bottom: 6px; font-size: 20px; }
+  .login-box p.sub { text-align: center; color: #777; font-size: 13px; margin-bottom: 20px; }
+  .tab-btns { display: flex; margin-bottom: 20px; }
+  .tab-btns button {
+    flex: 1; padding: 10px; border: none; cursor: pointer; font-size: 13px; font-weight: 600;
+    background: #e8edf3; color: #1e3a5f;
+  }
+  .tab-btns button.active { background: #1e3a5f; color: #fff; }
+  .tab-btns button:first-child { border-radius: 6px 0 0 6px; }
+  .tab-btns button:last-child { border-radius: 0 6px 6px 0; }
+
+  /* ---------- Forms ---------- */
+  label { display: block; font-size: 13px; color: #444; margin: 12px 0 4px; font-weight: 600; }
+  input, select, textarea {
+    width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+    background: #fff; outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #1e3a5f; }
+  textarea { resize: vertical; min-height: 70px; }
+  .form-row { display: flex; gap: 12px; }
+  .form-row > div { flex: 1; }
+
+  .btn {
+    background: #1e3a5f; color: #fff; border: none; padding: 10px 18px;
+    border-radius: 6px; cursor: pointer; font-size: 14px; margin-top: 16px; font-weight: 600;
+  }
+  .btn:hover { background: #2a4f7f; }
+  .btn-green { background: #27ae60; } .btn-green:hover { background: #1e8449; }
+  .btn-red { background: #e74c3c; } .btn-red:hover { background: #c0392b; }
+  .btn-back { background: #7f8c9b; margin-bottom: 15px; margin-top: 0; }
+  .btn-back:hover { background: #6b7a89; }
+
+  /* ---------- Dashboard Cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-top: 20px; }
+  .card {
+    background: #fff; border-radius: 10px; padding: 26px 16px; text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+    border: 1px solid #eef2f6;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 5px 14px rgba(0,0,0,0.14); }
+  .card .icon { font-size: 34px; margin-bottom: 10px; }
+  .card h3 { color: #1e3a5f; font-size: 15px; font-weight: 600; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap { width: 100%; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 16px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e3e8ee; font-size: 13.5px; }
+  th { background: #1e3a5f; color: #fff; font-weight: 600; }
+  tr:hover td { background: #f6f9fc; }
+  .panel { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+  .panel h2 { color: #1e3a5f; margin-bottom: 14px; font-size: 19px; }
+
+  .msg { margin-top: 12px; padding: 10px; border-radius: 6px; font-size: 14px; display: none; }
+  .msg.ok { display: block; background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+  .msg.err { display: block; background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+
+  .badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; display: inline-block; }
+  .badge.Present, .badge.Approved, .badge.Paid { background: #d4edda; color: #155724; }
+  .badge.Absent, .badge.Rejected { background: #f8d7da; color: #721c24; }
+  .badge.Pending, .badge.Partial { background: #fff3cd; color: #856404; }
+  .badge.Urgent { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+  .small-btn { padding: 5px 10px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; color: #fff; margin-right: 5px; font-weight: 600; }
+
+  /* Room Tree */
+  .hostel-block { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-top: 10px; }
+  .hostel-name { color: #1e3a5f; font-weight: 700; margin-bottom: 6px; }
+  .floor-block { margin-left: 14px; padding-left: 10px; border-left: 2px dashed #cbd5e1; margin-bottom: 8px; }
+  .floor-name { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+  .room-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+  .room-chip { background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px; text-align: center; font-size: 12px; }
+  .room-chip.occupied { background: #eef4fb; border-color: #1e3a5f; }
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div class="topbar" id="topbar" style="display:none;">
+  <h1>🏠 Hostel Management System</h1>
+  <div>
+    <span class="user-info" id="loggedUser"></span>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- ================= LOGIN PAGE ================= -->
+<div class="page active" id="loginPage">
+  <div class="login-box">
+    <h2>HOSTEL MANAGEMENT SYSTEM</h2>
+    <p class="sub">Please login to continue</p>
+
+    <div class="tab-btns">
+      <button id="adminTab" class="active" onclick="switchTab('admin')">Admin Login</button>
+      <button id="studentTab" onclick="switchTab('student')">Student Login</button>
+      <button id="registerTab" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div id="adminLoginForm">
+      <label>Admin Username</label>
+      <input type="text" id="adminUser" placeholder="Enter admin username" value="ADMIN">
+      <label>Admin Password</label>
+      <input type="password" id="adminPass" placeholder="Enter admin password" value="Hosttel@123">
+      <button class="btn" style="width:100%;" onclick="adminLogin()">Login as Admin</button>
+      <div class="msg" id="adminMsg"></div>
+    </div>
+
+    <!-- Student Login Form -->
+    <div id="studentLoginForm" style="display:none;">
+      <label>Student ID</label>
+      <input type="text" id="stuId" placeholder="e.g. 12" value="12">
+      <label>Password</label>
+      <input type="password" id="stuPass" placeholder="Enter password" value="Anushka@2007">
+      <button class="btn" style="width:100%;" onclick="studentLogin()">Login as Student</button>
+      <div class="msg" id="stuMsg"></div>
+    </div>
+
+    <!-- Student Registration Form -->
+    <div id="registerForm" style="display:none;">
+      <label>Student ID</label>
+      <input type="text" id="regId" placeholder="e.g. 15">
+      <label>Student Full Name</label>
+      <input type="text" id="regName" placeholder="Enter student name">
+      <label>Create Password</label>
+      <input type="password" id="regPass" placeholder="Create password">
+      <button class="btn btn-green" style="width:100%;" onclick="studentRegister()">Register Account</button>
+      <div class="msg" id="regMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ADMIN DASHBOARD ================= -->
+<div class="page" id="adminDashboard">
+  <div class="panel">
+    <h2>Admin Menu</h2>
+    <div class="cards">
+      <div class="card" onclick="showPage('approvalsPage')">
+        <div class="icon">👥</div><h3>Student Approvals</h3>
+      </div>
+      <div class="card" onclick="showPage('roomPage')">
+        <div class="icon">🏢</div><h3>Manage Rooms</h3>
+      </div>
+      <div class="card" onclick="showPage('attendancePage')">
+        <div class="icon">📋</div><h3>Manage Attendance</h3>
+      </div>
+      <div class="card" onclick="showPage('feePage')">
+        <div class="icon">💳</div><h3>Manage Fees</h3>
+      </div>
+      <div class="card" onclick="showPage('messPage')">
+        <div class="icon">🍽️</div><h3>Manage Mess Menu</h3>
+      </div>
+      <div class="card" onclick="showPage('leavePage')">
+        <div class="icon">📝</div><h3>Approve Leave</h3>
+      </div>
+      <div class="card" onclick="showPage('complaintPage')">
+        <div class="icon">📢</div><h3>View Complaints</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STUDENT DASHBOARD ================= -->
+<div class="page" id="studentDashboard">
+  <div class="panel">
+    <h2>Student Menu</h2>
+    <div class="cards">
+      <div class="card" onclick="showPage('profilePage')">
+        <div class="icon">👤</div><h3>My Profile</h3>
+      </div>
+      <div class="card" onclick="showPage('roomPage')">
+        <div class="icon">🚪</div><h3>Room Allocation</h3>
+      </div>
+      <div class="card" onclick="showPage('attendancePage')">
+        <div class="icon">📋</div><h3>View Attendance</h3>
+      </div>
+      <div class="card" onclick="showPage('feePage')">
+        <div class="icon">💳</div><h3>My Fees</h3>
+      </div>
+      <div class="card" onclick="showPage('messPage')">
+        <div class="icon">🍽️</div><h3>View Mess Menu</h3>
+      </div>
+      <div class="card" onclick="showPage('leavePage')">
+        <div class="icon">📝</div><h3>Apply for Leave</h3>
+      </div>
+      <div class="card" onclick="showPage('complaintPage')">
+        <div class="icon">📢</div><h3>Register Complaint</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PROFILE PAGE ================= -->
+<div class="page" id="profilePage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2>My Profile</h2>
+    <div class="form-row">
+      <div><label>Student ID</label><input type="text" id="profId" readonly></div>
+      <div><label>Full Name</label><input type="text" id="profName" readonly></div>
+    </div>
+    <div class="form-row">
+      <div><label>Course</label><input type="text" id="profCourse" readonly></div>
+      <div><label>Room Number</label><input type="text" id="profRoom" readonly></div>
+    </div>
+    <div style="margin-top:14px;"><label>Status</label><span class="badge Approved" id="profStatus">Approved</span></div>
+
+    <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+    <h3 style="color:#1e3a5f; font-size:15px;">Change Password</h3>
+    <div class="form-row">
+      <div><label>Current Password</label><input type="password" id="profOldPass"></div>
+      <div><label>New Password</label><input type="password" id="profNewPass"></div>
+    </div>
+    <button class="btn btn-green" onclick="changePassword()">Update Password</button>
+    <div class="msg" id="profMsg"></div>
+  </div>
+</div>
+
+<!-- ================= APPROVALS PAGE ================= -->
+<div class="page" id="approvalsPage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2>Student Registration Approvals</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Student ID</th><th>Name</th><th>Assign Course</th><th>Action</th></tr>
+        </thead>
+        <tbody id="approvalsBody"></tbody>
+      </table>
+    </div>
+    <div class="msg" id="approvalsMsg"></div>
+
+    <hr style="margin:24px 0; border:none; border-top:1px solid #eee;">
+    <h3 style="color:#1e3a5f; font-size:16px;">All Students</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Student ID</th><th>Name</th><th>Course</th><th>Room</th><th>Status</th></tr>
+        </thead>
+        <tbody id="allStudentsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ROOM PAGE ================= -->
+<div class="page" id="roomPage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2>Room Allocation</h2>
+
+    <!-- Student: Request Room -->
+    <div id="roomStudentBox" style="display:none;">
+      <div style="background:#eef4fb; padding:12px; border-radius:6px; margin-bottom:14px;">
+        <b>Current Room:</b> <span id="currentRoomText">Not assigned</span>
+      </div>
+      <label>Request Room Number</label>
+      <input type="text" id="reqRoomInput" placeholder="e.g. 101, 102, 201, B101">
+      <button class="btn btn-green" onclick="submitRoomReq()">Submit Request</button>
+      <div class="msg" id="roomStudentMsg"></div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+    </div>
+
+    <!-- Admin: Add Room & Process Requests -->
+    <div id="roomAdminBox" style="display:none;">
+      <h3 style="color:#1e3a5f; font-size:15px;">Add New Room to Hierarchy</h3>
+      <div class="form-row">
+        <div><label>Hostel</label><input type="text" id="newHostel" placeholder="Hostel-A"></div>
+        <div><label>Floor</label><input type="text" id="newFloor" placeholder="1st Floor"></div>
+        <div><label>Room No</label><input type="text" id="newRoom" placeholder="103"></div>
+      </div>
+      <button class="btn btn-green" onclick="addRoom()">Add Room</button>
+      <div class="msg" id="roomAdminMsg"></div>
+
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+      <h3 style="color:#1e3a5f; font-size:15px;">Pending Room Requests</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Request ID</th><th>Student ID</th><th>Room</th><th>Action</th></tr>
+          </thead>
+          <tbody id="adminRoomReqBody"></tbody>
+        </table>
+      </div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+    </div>
+
+    <h3 style="color:#1e3a5f; font-size:15px;">Hostel Rooms Directory</h3>
+    <div id="roomTree"></div>
+  </div>
+</div>
+
+<!-- ================= ATTENDANCE PAGE ================= -->
+<div class="page" id="attendancePage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2 id="attendanceTitle">Attendance</h2>
+
+    <div id="markAttendanceBox" style="display:none;">
+      <div class="form-row">
+        <div><label>Student ID</label><input type="text" id="attId" placeholder="e.g. 12"></div>
+        <div><label>Date</label><input type="date" id="attDate"></div>
+        <div>
+          <label>Status</label>
+          <select id="attStatus">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-green" onclick="markAttendance()">Mark Attendance</button>
+        <button class="btn" style="background:#7f8c9b;" onclick="undoAttendance()">↩️ Undo Last</button>
+      </div>
+      <div class="msg" id="attMsg"></div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+      
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="color:#1e3a5f; font-size:15px;">⚠️ Defaulters List (&lt; 75% Attendance)</h3>
+        <input type="number" id="defaulterThreshold" value="75" style="width:65px; padding:4px;" onchange="renderAttendance()">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Student ID</th><th>Name</th><th>Attended</th><th>Total</th><th>Percentage</th></tr>
+          </thead>
+          <tbody id="defaultersBody"></tbody>
+        </table>
+      </div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+    </div>
+
+    <div id="studentAttSummary" style="display:none; background:#eef4fb; padding:12px; border-radius:6px; margin-bottom:14px;">
+      <b>Attendance Rate:</b> <span id="studentAttRate">0%</span>
+    </div>
+
+    <h3 style="color:#1e3a5f; font-size:15px;">Attendance Records</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Student ID</th><th>Name</th><th>Date</th><th>Status</th></tr>
+        </thead>
+        <tbody id="attendanceBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MESS MENU PAGE ================= -->
+<div class="page" id="messPage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2>Weekly Mess Menu & Timings</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Day</th><th>Breakfast</th><th>Lunch</th><th>Snacks</th><th>Dinner</th></tr>
+        </thead>
+        <tbody id="messBody"></tbody>
+      </table>
+    </div>
+    <div id="messEditBox" style="display:none; margin-top:16px;">
+      <button class="btn btn-green" onclick="saveMessMenu()">Save Menu Changes</button>
+      <div class="msg" id="messMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FEES PAGE ================= -->
+<div class="page" id="feePage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2 id="feeTitle">Fee Management</h2>
+
+    <div id="feeAdminBox" style="display:none;">
+      <h3 style="color:#1e3a5f; font-size:15px;">Add Fee Record</h3>
+      <div class="form-row">
+        <div><label>Student ID</label><input type="text" id="feeStudentId" placeholder="e.g. 12"></div>
+        <div><label>Total Fee (Rs.)</label><input type="number" id="feeTotal" min="0" step="0.01" placeholder="45000"></div>
+        <div><label>Fee Date</label><input type="date" id="feeDate"></div>
+      </div>
+      <button class="btn btn-green" onclick="addFeeRecord()">Add Fee Record</button>
+      <div class="msg" id="feeAdminMsg"></div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="color:#1e3a5f; font-size:15px;">All Fee Records</h3>
+        <button class="btn" style="margin-top:0;" onclick="sortFeesByDue()">Sort by Due (Highest First - Merge Sort)</button>
+      </div>
+    </div>
+
+    <div id="feeStudentBox" style="display:none;">
+      <div id="myFeeSummary" style="background:#eef4fb; padding:12px; border-radius:6px; margin-bottom:14px;"></div>
+      <label>Payment Amount (Rs.)</label>
+      <input type="number" id="feePaymentAmount" min="0.01" step="0.01" placeholder="Enter payment amount">
+      <button class="btn btn-green" onclick="makeFeePayment()">Make Payment</button>
+      <div class="msg" id="feeStudentMsg"></div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th><th>Name</th><th>Total Fee (Rs.)</th>
+            <th>Paid (Rs.)</th><th>Due (Rs.)</th><th>Status</th><th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="feeBody"></tbody>
+      </table>
+    </div>
+
+    <div id="paymentHistoryBox" style="display:none; margin-top:20px;">
+      <h3 style="color:#1e3a5f; font-size:15px;">Payment History</h3>
+      <div id="paymentHistory"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LEAVE PAGE ================= -->
+<div class="page" id="leavePage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2 id="leaveTitle">Leave Management</h2>
+
+    <div id="leaveFormBox" style="display:none;">
+      <div class="form-row">
+        <div>
+          <label>Type</label>
+          <select id="leaveType">
+            <option value="1">Normal Leave</option>
+            <option value="2">Urgent / Medical (High Priority)</option>
+          </select>
+        </div>
+        <div><label>From Date</label><input type="date" id="leaveFrom"></div>
+        <div><label>To Date</label><input type="date" id="leaveTo"></div>
+      </div>
+      <label>Reason</label>
+      <textarea id="leaveReason" placeholder="Enter reason for leave"></textarea>
+      <button class="btn btn-green" onclick="applyLeave()">Submit Application</button>
+      <div class="msg" id="leaveMsg"></div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Type</th><th>Student ID</th><th>Name</th><th>From</th><th>To</th><th>Reason</th><th>Status</th>
+            <th id="leaveActionCol" style="display:none;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="leaveBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= COMPLAINT PAGE ================= -->
+<div class="page" id="complaintPage">
+  <button class="btn btn-back" onclick="goDashboard()">← Back</button>
+  <div class="panel">
+    <h2>Hostel Complaints</h2>
+
+    <div id="complaintFormBox" style="display:none;">
+      <label>Complaint Details</label>
+      <textarea id="compDetails" placeholder="Describe your grievance"></textarea>
+      <button class="btn btn-green" onclick="submitComplaint()">Register Complaint</button>
+      <div class="msg" id="compMsg"></div>
+      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+    </div>
+
+    <div id="complaintAdminBox" style="display:none; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px; color:#666;">* Complaints resolved in strict FIFO Queue order.</span>
+        <button class="btn btn-green" style="margin-top:0;" onclick="resolveNextComplaint()">⚡ Resolve Next in Queue</button>
+      </div>
+      <div class="msg" id="compAdminMsg"></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Queue #</th><th>Student ID</th><th>Details</th><th>Status</th><th id="compActionCol" style="display:none;">Action</th></tr>
+        </thead>
+        <tbody id="complaintBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   HOSTEL MANAGEMENT SYSTEM - FRONTEND LOGIC
+   Data now comes from the HostelMate C++ server (SQLite database)
+   instead of the browser's localStorage.
+========================================================= */
+
+// Same origin when opened through the server (http://localhost:8080).
+// If this file is opened directly from disk, talk to the default server port.
+const API_BASE = location.protocol === "file:" ? "http://localhost:8080" : "";
+
+let currentUser = null;
+let authToken = "";
+
+function money(v) { return Number(v||0).toLocaleString("en-IN", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+// escape text coming from the database before putting it into HTML
+function esc(v) {
+  return String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+
+function showMsg(id, text, ok=true) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = ok ? "msg ok" : "msg err";
+  el.textContent = text;
+}
+
+/* ---------- talking to the server ---------- */
+async function api(method, path, body) {
+  const headers = { "Content-Type": "application/json" };
+  if (authToken) headers["X-Token"] = authToken;
+
+  let res;
+  try {
+    res = await fetch(API_BASE + "/api" + path, {
+      method, headers, body: body === undefined ? undefined : JSON.stringify(body)
+    });
+  } catch (e) {
+    const err = new Error("Cannot reach the HostelMate server. Start HostelMateServer and open http://localhost:8080");
+    err.status = 0;
+    throw err;
+  }
+
+  let data = {};
+  try { data = await res.json(); } catch (e) {}
+
+  if (!res.ok) {
+    if (res.status === 401 && authToken) sessionExpired();
+    const err = new Error(data.error || ("Server error (" + res.status + ")"));
+    err.status = res.status;
+    throw err;
+  }
+  return data;
+}
+
+function sessionExpired() {
+  authToken = "";
+  currentUser = null;
+  document.getElementById("topbar").style.display = "none";
+  showPage("loginPage");
+  showMsg("adminMsg", "Session expired. Please log in again.", false);
+}
+
+// used by the render functions when a page cannot be loaded
+function renderFail(e) {
+  if (e && e.status === 401) return;
+  alert(e && e.message ? e.message : "Something went wrong.");
+}
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  if (id === "profilePage") renderProfile();
+  if (id === "approvalsPage") renderApprovals();
+  if (id === "roomPage") renderRooms();
+  if (id === "attendancePage") renderAttendance();
+  if (id === "feePage") renderFees();
+  if (id === "messPage") renderMess();
+  if (id === "leavePage") renderLeaves();
+  if (id === "complaintPage") renderComplaints();
+}
+
+function goDashboard() {
+  showPage(currentUser.role === "admin" ? "adminDashboard" : "studentDashboard");
+}
+
+function switchTab(tab) {
+  document.getElementById("adminTab").classList.toggle("active", tab === "admin");
+  document.getElementById("studentTab").classList.toggle("active", tab === "student");
+  document.getElementById("registerTab").classList.toggle("active", tab === "register");
+  document.getElementById("adminLoginForm").style.display = tab === "admin" ? "block" : "none";
+  document.getElementById("studentLoginForm").style.display = tab === "student" ? "block" : "none";
+  document.getElementById("registerForm").style.display = tab === "register" ? "block" : "none";
+}
+
+async function adminLogin() {
+  const u = document.getElementById("adminUser").value.trim();
+  const p = document.getElementById("adminPass").value;
+  try {
+    const r = await api("POST", "/admin/login", { username: u, password: p });
+    authToken = r.token;
+    currentUser = { role: "admin" };
+    afterLogin("Administrator (Admin)");
+  } catch (e) {
+    showMsg("adminMsg", e.status === 401 ? "Invalid Credentials! Use ADMIN / Hosttel@123" : e.message, false);
+  }
+}
+
+async function studentLogin() {
+  const id = document.getElementById("stuId").value.trim();
+  const pass = document.getElementById("stuPass").value;
+  try {
+    const r = await api("POST", "/student/login", { id, password: pass });
+    authToken = r.token;
+    currentUser = { role: "student", id: r.id, name: r.name, course: r.course, roomNo: r.roomNo };
+    afterLogin(`${r.name} (${r.id})`);
+  } catch (e) {
+    showMsg("stuMsg", e.message, false);
+  }
+}
+
+async function studentRegister() {
+  const id = document.getElementById("regId").value.trim();
+  const name = document.getElementById("regName").value.trim();
+  const pass = document.getElementById("regPass").value;
+  if (!id || !name || !pass) {
+    showMsg("regMsg", "Please fill all fields.", false);
+    return;
+  }
+  try {
+    await api("POST", "/register", { id, name, password: pass });
+    showMsg("regMsg", "Registration submitted. Wait for admin approval.", true);
+    setTimeout(() => switchTab("student"), 1500);
+  } catch (e) {
+    showMsg("regMsg", e.message, false);
+  }
+}
+
+function afterLogin(name) {
+  document.getElementById("topbar").style.display = "flex";
+  document.getElementById("loggedUser").textContent = "Logged in as: " + name;
+  goDashboard();
+}
+
+function logout() {
+  if (authToken) api("POST", "/logout", {}).catch(() => {});
+  authToken = "";
+  currentUser = null;
+  document.getElementById("topbar").style.display = "none";
+  showPage("loginPage");
+}
+
+/* Profile */
+async function renderProfile() {
+  try {
+    const u = await api("GET", "/profile");
+    currentUser.course = u.course;
+    currentUser.roomNo = u.roomNo;
+    document.getElementById("profId").value = u.id;
+    document.getElementById("profName").value = u.name;
+    document.getElementById("profCourse").value = u.course || "Not assigned";
+    document.getElementById("profRoom").value = u.roomNo || "Not assigned";
+  } catch (e) { renderFail(e); }
+}
+async function changePassword() {
+  const oldP = document.getElementById("profOldPass").value;
+  const newP = document.getElementById("profNewPass").value;
+  try {
+    await api("POST", "/password", { oldPassword: oldP, newPassword: newP });
+    showMsg("profMsg", "Password updated successfully!", true);
+    document.getElementById("profOldPass").value = "";
+    document.getElementById("profNewPass").value = "";
+  } catch (e) {
+    showMsg("profMsg", e.message, false);
+  }
+}
+
+/* Approvals */
+async function renderApprovals() {
+  let users;
+  try { users = await api("GET", "/students"); } catch (e) { renderFail(e); return; }
+  const pending = users.filter(x => x.status === "Pending");
+  const b = document.getElementById("approvalsBody");
+  b.innerHTML = "";
+  if (pending.length === 0) {
+    b.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">No pending registrations.</td></tr>`;
+  } else {
+    pending.forEach(u => {
+      b.innerHTML += `<tr>
+        <td><b>${esc(u.id)}</b></td><td>${esc(u.name)}</td>
+        <td><input type="text" id="cr_${esc(u.id)}" value="B.Tech CSE" style="padding:4px; max-width:140px;"></td>
+        <td>
+          <button class="small-btn btn-green" onclick="approveUser('${esc(u.id)}')">Approve</button>
+          <button class="small-btn btn-red" onclick="rejectUser('${esc(u.id)}')">Reject</button>
+        </td>
+      </tr>`;
+    });
+  }
+  const allB = document.getElementById("allStudentsBody");
+  allB.innerHTML = "";
+  users.forEach(u => {
+    allB.innerHTML += `<tr>
+      <td>${esc(u.id)}</td><td>${esc(u.name)}</td><td>${esc(u.course||'-')}</td><td>${esc(u.roomNo||'-')}</td>
+      <td><span class="badge ${esc(u.status)}">${esc(u.status)}</span></td>
+    </tr>`;
+  });
+}
+async function approveUser(id) {
+  const c = document.getElementById("cr_" + id).value;
+  try {
+    await api("POST", "/students/approve", { id, course: c });
+    showMsg("approvalsMsg", "Student approved successfully.", true);
+  } catch (e) { showMsg("approvalsMsg", e.message, false); }
+  renderApprovals();
+}
+async function rejectUser(id) {
+  try {
+    await api("POST", "/students/reject", { id });
+    showMsg("approvalsMsg", "Student rejected.", true);
+  } catch (e) { showMsg("approvalsMsg", e.message, false); }
+  renderApprovals();
+}
+
+/* Rooms */
+async function renderRooms() {
+  const isAdmin = currentUser.role === "admin";
+  document.getElementById("roomAdminBox").style.display = isAdmin ? "block" : "none";
+  document.getElementById("roomStudentBox").style.display = isAdmin ? "none" : "block";
+
+  let rooms, reqs = [];
+  try {
+    rooms = await api("GET", "/rooms");
+    if (isAdmin) reqs = await api("GET", "/room-requests");
+    else {
+      const me = await api("GET", "/profile");
+      currentUser.roomNo = me.roomNo;
+    }
+  } catch (e) { renderFail(e); return; }
+
+  const treeEl = document.getElementById("roomTree");
+  treeEl.innerHTML = "";
+  const tree = {};
+  rooms.forEach(r => {
+    if (!tree[r.hostel]) tree[r.hostel] = {};
+    if (!tree[r.hostel][r.floor]) tree[r.hostel][r.floor] = [];
+    tree[r.hostel][r.floor].push(r);
+  });
+  Object.entries(tree).forEach(([h, floors]) => {
+    let flHtml = "";
+    Object.entries(floors).forEach(([fl, rms]) => {
+      let rChips = rms.map(r => `
+        <div class="room-chip ${r.students.length > 0 ? 'occupied' : ''}">
+          <b>Room ${esc(r.roomNo)}</b><br><small style="color:#666;">${r.students.length > 0 ? 'Res: '+esc(r.students.join(', ')) : 'Vacant'}</small>
+        </div>
+      `).join("");
+      flHtml += `<div class="floor-block"><div class="floor-name">📍 ${esc(fl)}</div><div class="room-chips">${rChips}</div></div>`;
+    });
+    treeEl.innerHTML += `<div class="hostel-block"><div class="hostel-name">🏢 ${esc(h)}</div>${flHtml}</div>`;
+  });
+
+  if (isAdmin) {
+    const b = document.getElementById("adminRoomReqBody");
+    b.innerHTML = "";
+    if (reqs.length === 0) b.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">No pending requests.</td></tr>`;
+    reqs.forEach(r => {
+      b.innerHTML += `<tr>
+        <td>#${r.id}</td><td><b>${esc(r.studentId)}</b></td><td>Room ${esc(r.roomNo)}</td>
+        <td>
+          <button class="small-btn btn-green" onclick="processRoomReq(${r.id}, 'approve')">Approve</button>
+          <button class="small-btn btn-red" onclick="processRoomReq(${r.id}, 'reject')">Reject</button>
+        </td>
+      </tr>`;
+    });
+  } else {
+    document.getElementById("currentRoomText").textContent = currentUser.roomNo || "Not assigned";
+  }
+}
+async function submitRoomReq() {
+  const r = document.getElementById("reqRoomInput").value.trim();
+  if (!r) return;
+  try {
+    await api("POST", "/room-requests", { roomNo: r });
+    showMsg("roomStudentMsg", "Room request submitted!", true);
+    document.getElementById("reqRoomInput").value = "";
+  } catch (e) { showMsg("roomStudentMsg", e.message, false); }
+}
+async function addRoom() {
+  const h = document.getElementById("newHostel").value.trim();
+  const f = document.getElementById("newFloor").value.trim();
+  const r = document.getElementById("newRoom").value.trim();
+  if (!h || !f || !r) return;
+  try {
+    await api("POST", "/rooms", { hostel: h, floor: f, roomNo: r });
+    showMsg("roomAdminMsg", `Room ${r} added to ${h}!`, true);
+  } catch (e) { showMsg("roomAdminMsg", e.message, false); }
+  renderRooms();
+}
+async function processRoomReq(id, action) {
+  try {
+    const r = await api("POST", "/room-requests/process", { id, action });
+    showMsg("roomAdminMsg", r.message, true);
+  } catch (e) { showMsg("roomAdminMsg", e.message, false); }
+  renderRooms();
+}
+
+/* Attendance */
+async function renderAttendance() {
+  const isAdmin = currentUser.role === "admin";
+  document.getElementById("markAttendanceBox").style.display = isAdmin ? "block" : "none";
+  document.getElementById("studentAttSummary").style.display = isAdmin ? "none" : "block";
+
+  let records;
+  try { records = await api("GET", "/attendance"); } catch (e) { renderFail(e); return; }
+
+  const b = document.getElementById("attendanceBody");
+  b.innerHTML = "";
+  if (records.length === 0) {
+    b.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">No attendance records found.</td></tr>`;
+  } else {
+    records.forEach(r => {
+      b.innerHTML += `<tr>
+        <td>${esc(r.id)}</td><td>${esc(r.name)}</td><td>${esc(r.date)}</td>
+        <td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td>
+      </tr>`;
+    });
+  }
+
+  if (isAdmin) {
+    const th = parseFloat(document.getElementById("defaulterThreshold").value) || 75;
+    const m = {};
+    records.forEach(r => {
+      if (!m[r.id]) m[r.id] = { id: r.id, name: r.name, tot: 0, p: 0 };
+      m[r.id].tot++;
+      if (r.status === "Present") m[r.id].p++;
+    });
+    const defs = [];
+    Object.values(m).forEach(s => {
+      const pct = (s.p * 100 / s.tot).toFixed(1);
+      if (pct < th) defs.push({ ...s, pct });
+    });
+    defs.sort((a, c) => a.pct - c.pct);
+    const defB = document.getElementById("defaultersBody");
+    defB.innerHTML = "";
+    if (defs.length === 0) defB.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">No defaulters below ${th}%.</td></tr>`;
+    defs.forEach(d => {
+      defB.innerHTML += `<tr>
+        <td><b>${esc(d.id)}</b></td><td>${esc(d.name)}</td><td>${d.p}</td><td>${d.tot}</td>
+        <td><span class="badge Rejected">${d.pct}%</span></td>
+      </tr>`;
+    });
+  } else {
+    const tot = records.length;
+    const p = records.filter(r => r.status === "Present").length;
+    const pct = tot > 0 ? (p * 100 / tot).toFixed(1) : 0;
+    document.getElementById("studentAttRate").textContent = `${pct}% (${p} of ${tot} classes attended)`;
+  }
+}
+async function markAttendance() {
+  const id = document.getElementById("attId").value.trim();
+  const date = document.getElementById("attDate").value;
+  const st = document.getElementById("attStatus").value;
+  if (!id || !date) return;
+  try {
+    await api("POST", "/attendance", { id, date, status: st });
+    showMsg("attMsg", `Attendance marked for ${id} as ${st}.`, true);
+  } catch (e) { showMsg("attMsg", e.message, false); }
+  renderAttendance();
+}
+async function undoAttendance() {
+  try {
+    await api("POST", "/attendance/undo", {});
+    showMsg("attMsg", "Undid last attendance mark.", true);
+  } catch (e) { showMsg("attMsg", e.message, false); }
+  renderAttendance();
+}
+
+/* Mess */
+async function renderMess() {
+  const isAdmin = currentUser.role === "admin";
+  let menu;
+  try { menu = await api("GET", "/mess"); } catch (e) { renderFail(e); return; }
+  const b = document.getElementById("messBody");
+  b.innerHTML = "";
+  menu.forEach((m, i) => {
+    if (isAdmin) {
+      b.innerHTML += `<tr>
+        <td><b>${esc(m.day)}</b></td>
+        <td><input value="${esc(m.breakfast)}" id="bf_${i}" style="padding:4px;"></td>
+        <td><input value="${esc(m.lunch)}" id="ln_${i}" style="padding:4px;"></td>
+        <td><input value="${esc(m.snacks)}" id="sn_${i}" style="padding:4px;"></td>
+        <td><input value="${esc(m.dinner)}" id="dn_${i}" style="padding:4px;"></td>
+      </tr>`;
+    } else {
+      b.innerHTML += `<tr>
+        <td><b>${esc(m.day)}</b></td><td>${esc(m.breakfast)}</td><td>${esc(m.lunch)}</td><td>${esc(m.snacks)}</td><td>${esc(m.dinner)}</td>
+      </tr>`;
+    }
+  });
+  document.getElementById("messEditBox").style.display = isAdmin ? "block" : "none";
+}
+async function saveMessMenu() {
+  const body = {};
+  for (let i = 0; i < 7; i++) {
+    body["breakfast" + i] = document.getElementById("bf_" + i).value;
+    body["lunch" + i] = document.getElementById("ln_" + i).value;
+    body["snacks" + i] = document.getElementById("sn_" + i).value;
+    body["dinner" + i] = document.getElementById("dn_" + i).value;
+  }
+  try {
+    await api("POST", "/mess", body);
+    showMsg("messMsg", "Mess timetable saved!", true);
+  } catch (e) { showMsg("messMsg", e.message, false); }
+}
+
+/* Fees */
+async function renderFees() {
+  const isAdmin = currentUser.role === "admin";
+  document.getElementById("feeAdminBox").style.display = isAdmin ? "block" : "none";
+  document.getElementById("feeStudentBox").style.display = isAdmin ? "none" : "block";
+  document.getElementById("paymentHistoryBox").style.display = isAdmin ? "none" : "block";
+
+  let recs;
+  try { recs = await api("GET", "/fees"); } catch (e) { renderFail(e); return; }
+
+  const b = document.getElementById("feeBody");
+  b.innerHTML = "";
+  if (recs.length === 0) {
+    b.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">No fee records found.</td></tr>`;
+  } else {
+    recs.forEach(f => {
+      const paid = Number(f.total) - Number(f.due);
+      b.innerHTML += `<tr>
+        <td>${esc(f.id)}</td><td>${esc(f.name)}</td><td>₹${money(f.total)}</td>
+        <td>₹${money(paid)}</td><td><b>₹${money(f.due)}</b></td>
+        <td><span class="badge ${f.status === 'Paid' ? 'Approved' : 'Rejected'}">${esc(f.status)}</span></td>
+        <td>${esc(f.date || '-')}</td>
+      </tr>`;
+    });
+  }
+
+  if (!isAdmin) {
+    const f = recs[0];
+    const s = document.getElementById("myFeeSummary");
+    if (f) {
+      s.innerHTML = `<b>Total:</b> ₹${money(f.total)} &bull; <b>Due:</b> ₹${money(f.due)} &bull; <b>Status:</b> ${esc(f.status)}`;
+      const hist = document.getElementById("paymentHistory");
+      hist.innerHTML = f.payments && f.payments.length > 0 ?
+        `<ol style="padding-left:20px;">${f.payments.map(p => `<li>Payment: ₹${money(p)}</li>`).join("")}</ol>` :
+        `<p style="color:#777;">No payments made yet.</p>`;
+    } else {
+      s.innerHTML = `No fee record found for you yet.`;
+      document.getElementById("paymentHistory").innerHTML = `<p style="color:#777;">No payments made yet.</p>`;
+    }
+  }
+}
+async function addFeeRecord() {
+  const id = document.getElementById("feeStudentId").value.trim();
+  const tot = Number(document.getElementById("feeTotal").value);
+  const d = document.getElementById("feeDate").value;
+  if (!id || !tot || !d) return;
+  try {
+    await api("POST", "/fees", { id, total: tot, date: d });
+    showMsg("feeAdminMsg", "Fee record added!", true);
+  } catch (e) { showMsg("feeAdminMsg", e.message, false); }
+  renderFees();
+}
+async function makeFeePayment() {
+  const amt = Number(document.getElementById("feePaymentAmount").value);
+  if (!amt || amt <= 0) return;
+  try {
+    await api("POST", "/fees/pay", { amount: amt });
+    showMsg("feeStudentMsg", `Payment of ₹${money(amt)} successful!`, true);
+    document.getElementById("feePaymentAmount").value = "";
+  } catch (e) { showMsg("feeStudentMsg", e.message, false); }
+  renderFees();
+}
+async function sortFeesByDue() {
+  try {
+    await api("POST", "/fees/sort", {});
+    showMsg("feeAdminMsg", "Fee records sorted by due amount (Merge Sort).", true);
+  } catch (e) { showMsg("feeAdminMsg", e.message, false); }
+  renderFees();
+}
+
+/* Leaves (Priority Queue: Urgent leaves first) */
+async function renderLeaves() {
+  const isAdmin = currentUser.role === "admin";
+  document.getElementById("leaveFormBox").style.display = isAdmin ? "none" : "block";
+  document.getElementById("leaveActionCol").style.display = isAdmin ? "table-cell" : "none";
+
+  let lvs;
+  try { lvs = await api("GET", "/leaves"); } catch (e) { renderFail(e); return; }
+  lvs.sort((a, b) => b.type - a.type);
+
+  const b = document.getElementById("leaveBody");
+  b.innerHTML = "";
+  if (lvs.length === 0) b.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#888;">No leaves found.</td></tr>`;
+  lvs.forEach((l, idx) => {
+    let act = "";
+    if (isAdmin && l.status === "Pending") {
+      act = `<td>
+        <button class="small-btn btn-green" onclick="decideLeave(${l.id}, 'Approved')">Approve</button>
+        <button class="small-btn btn-red" onclick="decideLeave(${l.id}, 'Rejected')">Reject</button>
+      </td>`;
+    } else if (isAdmin) {
+      act = `<td>—</td>`;
+    }
+    b.innerHTML += `<tr>
+      <td>#${l.id}</td>
+      <td><span class="badge ${l.type == 2 ? 'Urgent' : 'Pending'}">${l.type == 2 ? '⚡ Urgent' : 'Normal'}</span></td>
+      <td><b>${esc(l.studentId)}</b></td><td>${esc(l.name)}</td><td>${esc(l.from)}</td><td>${esc(l.to)}</td>
+      <td>${esc(l.reason)}</td><td><span class="badge ${esc(l.status)}">${esc(l.status)}</span></td>
+      ${act}
+    </tr>`;
+  });
+}
+async function applyLeave() {
+  const t = parseInt(document.getElementById("leaveType").value);
+  const f = document.getElementById("leaveFrom").value;
+  const to = document.getElementById("leaveTo").value;
+  const r = document.getElementById("leaveReason").value.trim();
+  if (!f || !to || !r) return;
+  try {
+    await api("POST", "/leaves", { type: t, from: f, to: to, reason: r });
+    showMsg("leaveMsg", "Leave application submitted!", true);
+    document.getElementById("leaveReason").value = "";
+  } catch (e) { showMsg("leaveMsg", e.message, false); }
+  renderLeaves();
+}
+async function decideLeave(id, st) {
+  try { await api("POST", "/leaves/decide", { id, status: st }); }
+  catch (e) { alert(e.message); }
+  renderLeaves();
+}
+
+/* Complaints (FIFO Queue) */
+let complaintCache = [];
+
+async function renderComplaints() {
+  const isAdmin = currentUser.role === "admin";
+  document.getElementById("complaintFormBox").style.display = isAdmin ? "none" : "block";
+  document.getElementById("complaintAdminBox").style.display = isAdmin ? "block" : "none";
+  document.getElementById("compActionCol").style.display = isAdmin ? "table-cell" : "none";
+
+  let cmps;
+  try { cmps = await api("GET", "/complaints"); } catch (e) { renderFail(e); return; }
+  complaintCache = cmps;
+
+  const b = document.getElementById("complaintBody");
+  b.innerHTML = "";
+  if (cmps.length === 0) b.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#888;">No complaints found.</td></tr>`;
+  cmps.forEach((c, i) => {
+    let act = "";
+    if (isAdmin && c.status === "Pending") {
+      act = `<td><button class="small-btn btn-green" onclick="resolveCmp(${i})">Resolve</button></td>`;
+    } else if (isAdmin) {
+      act = `<td><span style="color:#888; font-size:12px;">Resolved</span></td>`;
+    }
+    b.innerHTML += `<tr>
+      <td>#${i + 1}</td><td><b>${esc(c.studentId)}</b></td><td>${esc(c.details)}</td>
+      <td><span class="badge ${c.status === 'Resolved' ? 'Approved' : 'Pending'}">${esc(c.status)}</span></td>
+      ${act}
+    </tr>`;
+  });
+}
+async function submitComplaint() {
+  const d = document.getElementById("compDetails").value.trim();
+  if (!d) return;
+  try {
+    await api("POST", "/complaints", { details: d });
+    showMsg("compMsg", "Complaint registered in queue!", true);
+    document.getElementById("compDetails").value = "";
+  } catch (e) { showMsg("compMsg", e.message, false); }
+  renderComplaints();
+}
+async function resolveNextComplaint() {
+  try {
+    const r = await api("POST", "/complaints/resolve-next", {});
+    showMsg("compAdminMsg", `Resolved complaint from Student ${r.studentId}`, true);
+  } catch (e) { showMsg("compAdminMsg", e.message, false); }
+  renderComplaints();
+}
+async function resolveCmp(idx) {
+  const c = complaintCache[idx];
+  if (!c) return;
+  try { await api("POST", "/complaints/resolve", { id: c.id }); }
+  catch (e) { showMsg("compAdminMsg", e.message, false); }
+  renderComplaints();
+}
+</script>
+</body>
+</html>

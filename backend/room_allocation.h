@@ -1,4 +1,3 @@
-
 #ifndef ROOM_ALLOCATION_H
 #define ROOM_ALLOCATION_H
 

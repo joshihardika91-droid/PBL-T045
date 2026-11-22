@@ -11,8 +11,12 @@ private:
     string studentId;
     string complaintText;
     string status;
+    int dbId;
 
 public:
+    Complaint() { dbId = 0; }
+    void setData(int id, string sid, string text, string st);
+    void saveToDb();
     void submit_Complaint();
     void display_Complaint();
     void resolve_Complaint();
@@ -26,6 +30,7 @@ private:
     int complaintCount;
         int front, rear;
 
+    void loadPending();
 
 public:
     ComplaintManagement();

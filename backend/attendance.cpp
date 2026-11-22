@@ -1,5 +1,8 @@
 #include "attendance.h"
 #include <iostream>
+#include <string>
+#include <vector>
+#include "db.h"
 
 using namespace std;
 
@@ -446,11 +449,12 @@ static void showDefaulters(double threshold)
 
 void attendanceSave(void)
 {
-    FILE *f = fopen(FILE_NAME, "w");
+    dbBegin();
 
-    if (f == NULL)
+    if (!dbExecute("DELETE FROM attendance"))
     {
-        printf("Could not save file!\n");
+        dbRollback();
+        printf("Could not save to database!\n");
         return;
     }
 
@@ -460,41 +464,42 @@ void attendanceSave(void)
         {
             for (Record *r = s->head; r; r = r->next)
             {
-                fprintf(f, "%s|%s|%s|%c\n",
-                        s->id,
-                        s->name,
-                        r->date,
-                        r->status);
+                string sql = "INSERT INTO attendance (student_id, student_name, att_date, status) VALUES ('"
+                             + dbEscape(s->id) + "', '"
+                             + dbEscape(s->name) + "', '"
+                             + dbEscape(r->date) + "', '"
+                             + string(1, r->status) + "')";
+
+                if (!dbExecute(sql))
+                {
+                    dbRollback();
+                    printf("Could not save to database!\n");
+                    return;
+                }
             }
         }
     }
 
-    fclose(f);
+    dbCommit();
 }
 
 void attendanceLoad(void)
 {
-    FILE *f = fopen(FILE_NAME, "r");
+    vector<vector<string> > rows;
+    string sql = "SELECT student_id, student_name, att_date, status FROM attendance "
+                 "ORDER BY student_id, att_date";
 
-    if (f == NULL)
+    if (!dbQuery(sql, rows))
     {
         return;
     }
 
-    char line[200];
-
-    while (fgets(line, sizeof(line), f))
+    for (int i = 0; i < (int)rows.size(); i++)
     {
-        char *id = strtok(line, "|\n");
-        char *name = strtok(NULL, "|\n");
-        char *date = strtok(NULL, "|\n");
-        char *st = strtok(NULL, "|\n");
-
-        if (id == NULL || name == NULL ||
-            date == NULL || st == NULL)
-        {
-            continue;
-        }
+        const char *id = rows[i][0].c_str();
+        const char *name = rows[i][1].c_str();
+        const char *date = rows[i][2].c_str();
+        char status = rows[i][3][0];
 
         AttendanceStudent *s = findStudentLocal(id);
 
@@ -510,10 +515,20 @@ void attendanceLoad(void)
 
         char old;
 
-        setRecord(s, date, st[0], &old);
+        setRecord(s, date, status, &old);
     }
+}
 
-    fclose(f);
+// loads the table from the database only once, the first time attendance is used
+static int attendanceLoaded = 0;
+
+static void loadIfNeeded(void)
+{
+    if (attendanceLoaded == 0)
+    {
+        attendanceLoad();
+        attendanceLoaded = 1;
+    }
 }
 
 void attendanceCleanup(void)
@@ -560,6 +575,8 @@ void adminAttendanceMenu(void)
     char name[NAME_LEN];
     char date[DATE_LEN + 5];
     char st[16];
+
+    loadIfNeeded();
 
     cin.ignore(1000, '\n');
 
@@ -649,6 +666,8 @@ void adminAttendanceMenu(void)
 void studentViewAttendance(void)
 {
     char id[ID_LEN];
+
+    loadIfNeeded();
 
     cin.ignore(1000, '\n');
 
